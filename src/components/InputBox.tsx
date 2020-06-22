@@ -8,10 +8,11 @@ interface InputBoxProps {
 
 const InputBox: React.FC<InputBoxProps> = (props) => {
   return (
-    <View>
+    <View style={styles.container}>
       <TextInput
-        style={styles.inputBox}
+        style={styles.textInput}
         placeholder={props.placeholder}
+        placeholderTextColor="#6b84ff"
         onChangeText={(text) => props.onChangeText(text)}
       />
     </View>
@@ -19,7 +20,20 @@ const InputBox: React.FC<InputBoxProps> = (props) => {
 };
 
 const styles = StyleSheet.create({
-  inputBox: {},
+  container: {
+    width: "100%",
+  },
+  textInput: {
+    backgroundColor: "#4665ff",
+    borderColor: "#6b84ff",
+    borderRadius: 32,
+    borderWidth: 5,
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+    paddingLeft: 32,
+    height: 64,
+  },
 });
 
 export default InputBox;
