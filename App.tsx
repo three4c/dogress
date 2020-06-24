@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 
 import InputBox from "./src/components/InputBox";
 import SubmitButton from "./src/components/SubmitButton";
@@ -10,7 +10,13 @@ const App = () => {
     <View style={styles.container}>
       <InputBox placeholder="hoge" onChangeText={() => console.log("fuga")} />
       <SubmitButton buttonText="hoge" onPress={() => console.log("fuga")} />
-      <SNSButton onPress={() => console.log("piyo")}>icon</SNSButton>
+      <SNSButton onPress={() => console.log("piyo")}>
+        <Image
+          source={require("./assets/twitter.png")}
+          resizeMode="contain"
+          style={{ width: 24, height: 20 }}
+        />
+      </SNSButton>
     </View>
   );
 };

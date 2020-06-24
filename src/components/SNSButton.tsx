@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableHighlight } from "react-native";
+import { StyleSheet, View, TouchableHighlight } from "react-native";
 
 interface SNSButtonProps {
   onPress: () => void;
@@ -12,9 +12,7 @@ const SNSButton: React.FC<SNSButtonProps> = (props) => {
       style={styles.container}
       underlayColor="transparent"
     >
-      <View style={styles.SNSButton}>
-        <Text style={styles.SNSButtonText}>{props.children}</Text>
-      </View>
+      <View style={styles.SNSButton}>{props.children}</View>
     </TouchableHighlight>
   );
 };
@@ -32,9 +30,6 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     width: 64,
     height: 64,
-  },
-  SNSButtonText: {
-    color: "#fff",
   },
 });
 
