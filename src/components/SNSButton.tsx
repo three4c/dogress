@@ -7,20 +7,13 @@ interface SNSButtonProps {
 
 const SNSButton: React.FC<SNSButtonProps> = (props) => {
   return (
-    <TouchableHighlight
-      onPress={props.onPress}
-      style={styles.container}
-      underlayColor="transparent"
-    >
+    <TouchableHighlight onPress={props.onPress} underlayColor="transparent">
       <View style={styles.SNSButton}>{props.children}</View>
     </TouchableHighlight>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-  },
   SNSButton: {
     alignItems: "center",
     justifyContent: "center",

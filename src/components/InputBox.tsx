@@ -1,19 +1,32 @@
 import React from "react";
-import { StyleSheet, View, TextInput } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 
 interface InputBoxProps {
+  autoCapitalize?: "none";
+  autoCorrect?: boolean;
+  secureTextEntry?: boolean;
   placeholder: string;
   onChangeText: (text: string) => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 const InputBox: React.FC<InputBoxProps> = (props) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, props.style]}>
       <TextInput
-        style={styles.textInput}
+        autoCapitalize={props.autoCapitalize}
+        autoCorrect={props.autoCorrect}
+        secureTextEntry={props.secureTextEntry}
         placeholder={props.placeholder}
         placeholderTextColor="#6b84ff"
         onChangeText={(text) => props.onChangeText(text)}
+        style={styles.textInput}
       />
     </View>
   );
