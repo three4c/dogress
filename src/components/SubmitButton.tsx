@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, View, Text, TouchableHighlight } from "react-native";
 
 interface SubmitButtonProps {
-  buttonText: string;
   disabled?: boolean;
   onPress: () => void;
 }
@@ -15,9 +14,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = (props) => {
       disabled={props.disabled}
       underlayColor="transparent"
     >
-      <View style={styles.submitButton}>
-        <Text style={styles.submitButtonText}>{props.buttonText}</Text>
-      </View>
+      <View style={styles.submitButton}>{props.children}</View>
     </TouchableHighlight>
   );
 };
@@ -34,11 +31,6 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     borderWidth: 5,
     height: 64,
-  },
-  submitButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "700",
   },
 });
 
