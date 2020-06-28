@@ -5,15 +5,16 @@ import CustomText from "../components/CustomText";
 import InputBox from "../components/InputBox";
 import SubmitButton from "../components/SubmitButton";
 import SNSButton from "../components/SNSButton";
+import Title from "../components/Title";
 
 const LoginScreen = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.title}>
+      <Title>
         <CustomText color="#fff" size={24}>
           ログイン
         </CustomText>
-      </View>
+      </Title>
       <View style={styles.form}>
         <InputBox
           autoCapitalize="none"
@@ -50,17 +51,11 @@ const LoginScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
     backgroundColor: "#4665ff",
     flex: 1,
     alignItems: "center",
     paddingLeft: 24,
     paddingRight: 24,
-  },
-  title: {
-    position: "absolute",
-    top: 72,
-    left: 24,
   },
   form: {
     position: "absolute",

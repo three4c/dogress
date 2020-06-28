@@ -5,15 +5,16 @@ import CustomText from "../components/CustomText";
 import InputBox from "../components/InputBox";
 import SubmitButton from "../components/SubmitButton";
 import SNSButton from "../components/SNSButton";
+import Title from "../components/Title";
 
 const SignupScreen = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.title}>
+      <Title>
         <CustomText color="#fff" size={24}>
           アカウント作成
         </CustomText>
-      </View>
+      </Title>
       <View style={styles.form}>
         <InputBox
           autoCapitalize="none"
