@@ -26,6 +26,7 @@ const InputBox: React.FC<InputBoxProps> = (props) => {
         placeholder={props.placeholder}
         placeholderTextColor="#6b84ff"
         onChangeText={(text) => props.onChangeText(text)}
+        selectionColor="#fff"
         style={styles.textInput}
       />
     </View>
