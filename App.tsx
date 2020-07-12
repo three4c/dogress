@@ -7,8 +7,8 @@ import MainScreen from "./src/screen/MainScreen";
 
 const App = createStackNavigator(
   {
-    Signup: { screen: SignupScreen },
     Main: { screen: MainScreen },
+    Signup: { screen: SignupScreen },
     Login: { screen: LoginScreen },
   },
   {

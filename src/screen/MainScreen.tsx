@@ -7,7 +7,7 @@ import Title from "../components/Title";
 const MainScreen = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.bg}>
+      <View>
         <Title>
           <CustomText color="#fff" size={24}>
             タスク
@@ -21,10 +21,7 @@ const MainScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  bg: {
     backgroundColor: "#4665ff",
-    height: 232,
   },
 });
 
