@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 
+import BottomSheet from "../components/BottomSheet";
 import CustomText from "../components/CustomText";
 import Title from "../components/Title";
 
@@ -14,6 +15,7 @@ const MainScreen = () => {
           </CustomText>
         </Title>
       </View>
+      <BottomSheet />
     </View>
   );
 };
