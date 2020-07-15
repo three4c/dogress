@@ -1,20 +1,19 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 
-const BottomSheet = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={{ color: "#000", fontSize: 16 }}>Bottom Sheet Text</Text>
-    </View>
-  );
+const BottomSheet: React.FC = (props) => {
+  return <View style={styles.container}>{props.children}</View>;
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    position: "absolute",
+    top: 264,
+    width: "100%",
+    height: "100%",
   },
 });
 
