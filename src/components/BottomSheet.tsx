@@ -1,39 +1,46 @@
 import React from "react";
-import { StyleSheet, View, Animated } from "react-native";
-import {
-  PanGestureHandler,
-  PanGestureHandlerStateChangeEvent,
-  State,
-} from "react-native-gesture-handler";
+import { StyleSheet } from "react-native";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
+import { onGestureEvent, withSpring } from "react-native-redash";
+
+const { Value } = Animated;
+const config = {
+  damping: 15,
+  mass: 1,
+  stiffness: 150,
+  overshootClamping: false,
+  restSpeedThreshold: 0.1,
+  restDisplacementThreshold: 0.1,
+};
 
 const BottomSheet: React.FC = (props) => {
-  const translateY = new Animated.Value(0);
+  const translationY = new Value(0);
+  const velocityY = new Value(0);
+  const state = new Value(State.UNDETERMINED);
+  const gestureHandler = onGestureEvent({
+    translationY,
+    state,
+    velocityY,
+  });
 
-  const onGestureEvent = Animated.event([
-    {
-      nativeEvent: {
-        translationY: translateY,
-      },
-    },
-  ]);
+  const PEAK_Y = 264;
 
-  const onHandlerStateChange = (event: PanGestureHandlerStateChangeEvent) => {
-    if (event.nativeEvent.oldState == State.ACTIVE) {
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
-    }
-  };
+  const translateY = withSpring({
+    state,
+    value: translationY,
+    velocity: velocityY,
+    snapPoints: [-PEAK_Y, 0],
+    config,
+  });
 
   return (
-    <PanGestureHandler
-      onGestureEvent={onGestureEvent}
-      onHandlerStateChange={onHandlerStateChange}
-    >
+    <PanGestureHandler {...gestureHandler}>
       <Animated.View
-        style={[styles.container, { transform: [{ translateY: translateY }] }]}
+        style={[
+          styles.container,
+          { top: PEAK_Y, transform: [{ translateY: translateY }] },
+        ]}
       >
         {props.children}
       </Animated.View>
@@ -47,7 +54,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     position: "absolute",
-    top: 264,
     width: "100%",
     height: "100%",
   },
