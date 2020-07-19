@@ -1,8 +1,9 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 
 import BottomSheet from "../components/BottomSheet";
 import CustomText from "../components/CustomText";
+import Swiper from "../components/Swiper";
 import Title from "../components/Title";
 
 const MainScreen = () => {
@@ -15,7 +16,19 @@ const MainScreen = () => {
           </CustomText>
         </Title>
       </View>
-      <BottomSheet />
+      <BottomSheet>
+        <Swiper>
+          <View style={{ backgroundColor: "#f00", height: "100%" }}>
+            <Text>hoge</Text>
+          </View>
+          <View style={{ backgroundColor: "#0f0", height: "100%" }}>
+            <Text>fuga</Text>
+          </View>
+          <View style={{ backgroundColor: "00f", height: "100%" }}>
+            <Text>piyo</Text>
+          </View>
+        </Swiper>
+      </BottomSheet>
     </View>
   );
 };

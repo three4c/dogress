@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+    overflow: "hidden",
     position: "absolute",
     width: "100%",
     height: "100%",
