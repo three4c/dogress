@@ -6,9 +6,9 @@ import { onGestureEvent, withSpring } from "react-native-redash";
 
 const { Value } = Animated;
 const config = {
-  damping: 15,
+  damping: 24,
   mass: 1,
-  stiffness: 150,
+  stiffness: 100,
   overshootClamping: false,
   restSpeedThreshold: 0.1,
   restDisplacementThreshold: 0.1,
