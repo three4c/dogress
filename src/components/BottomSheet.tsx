@@ -1,82 +1,86 @@
-import React from "react";
-import { StyleSheet, View, Dimensions } from "react-native";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import Animated, {
-  add,
-  clockRunning,
-  cond,
-  debug,
-  divide,
-  eq,
-  floor,
-  not,
-  set,
-  useCode,
-} from "react-native-reanimated";
+import React, { useState } from "react";
+import { StyleSheet, View, Dimensions, Animated, Easing } from "react-native";
 import {
-  snapPoint,
-  timing,
-  useClock,
-  usePanGestureHandler,
-  useValue,
-  withOffset,
-  translate,
-} from "react-native-redash";
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+  PanGestureHandlerStateChangeEvent,
+  State,
+} from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("window");
 
 const BottomSheet: React.FC = (props) => {
+  /** 子要素を配列に変換 */
   const childrenArray = React.Children.toArray(props.children);
-  const clock = useClock();
-  const index = useValue(0);
-  const offsetX = useValue(0);
-  const translateX = useValue(0);
-  const snapPoints = childrenArray.map((_, i) => i * -width);
-  const {
-    gestureHandler,
-    state,
-    velocity,
-    translation,
-  } = usePanGestureHandler();
-  const to = snapPoint(translateX, velocity.x, snapPoints);
-  useCode(
-    () => [
-      cond(eq(state, State.ACTIVE), [
-        set(translateX, add(offsetX, translation.x)),
-      ]),
-      cond(eq(state, State.END), [
-        set(translateX, timing({ clock, from: translateX, to })),
-        set(offsetX, translateX),
-        cond(not(clockRunning(clock)), [
-          set(index, floor(divide(translateX, -width))),
-        ]),
-      ]),
-    ],
-    []
-  );
+  /** Animated.Valueもstateで操作することでアニメーションを実現 */
+  const [panPosition] = useState(new Animated.Value(0));
+  const [panStartPosition, setPanStartPosition] = useState(0);
+  const [prevPanX, setPrevPanX] = useState(0);
+  const [direction, setDirection] = useState(false);
+
+  const slideTo = (index: number) => {
+    Animated.timing(panPosition, {
+      toValue: index,
+      duration: 300,
+      easing: Easing.ease,
+    }).start();
+  };
+
+  const onPanHandler = (event: PanGestureHandlerGestureEvent) => {
+    const calcPosition =
+      panStartPosition - event.nativeEvent.translationX / width;
+
+    if (calcPosition >= 0 && calcPosition <= childrenArray.length - 1) {
+      panPosition.setValue(calcPosition);
+      setDirection(event.nativeEvent.x < prevPanX);
+      setPrevPanX(event.nativeEvent.x);
+    }
+  };
+
+  const onPanStateChangeHandler = (
+    event: PanGestureHandlerStateChangeEvent
+  ) => {
+    if (event.nativeEvent.state === State.BEGAN) {
+      setPanStartPosition((panPosition as any)._value);
+    } else if (event.nativeEvent.state === State.END) {
+      setPanStartPosition(0);
+      slideTo(
+        direction
+          ? Math.ceil((panPosition as any)._value)
+          : Math.floor((panPosition as any)._value)
+      );
+    }
+  };
 
   return (
-    <View style={[styles.container]}>
-      <PanGestureHandler {...gestureHandler}>
-        <Animated.View style={StyleSheet.absoluteFill}>
+    <PanGestureHandler
+      onGestureEvent={onPanHandler}
+      onHandlerStateChange={onPanStateChangeHandler}
+    >
+      <View style={styles.container}>
+        {React.Children.map(props.children, (child, index) => (
           <Animated.View
+            key={index}
             style={[
-              styles.bottomSheetList,
+              StyleSheet.absoluteFill,
+              styles.bottomSheetItem,
               {
-                width: width * childrenArray.length,
-                transform: [{ translateX }],
+                transform: [
+                  {
+                    translateX: panPosition.interpolate({
+                      inputRange: [index - 1, index, index + 1],
+                      outputRange: [width, 0, -width],
+                    }),
+                  },
+                ],
               },
             ]}
           >
-            {React.Children.map(props.children, (child, index) => (
-              <View key={index} style={styles.bottomSheetItem}>
-                {child}
-              </View>
-            ))}
+            {child}
           </Animated.View>
-        </Animated.View>
-      </PanGestureHandler>
-    </View>
+        ))}
+      </View>
+    </PanGestureHandler>
   );
 };
 
