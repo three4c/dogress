@@ -22,7 +22,7 @@ const BottomSheet: React.FC = (props) => {
     Animated.timing(panPosition, {
       toValue: index,
       duration: 300,
-      easing: Easing.ease,
+      easing: Easing.in(Easing.out(Easing.ease)),
     }).start();
   };
 
