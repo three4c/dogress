@@ -66,7 +66,7 @@ const BottomSheetSwiper: React.FC = (props) => {
       onHandlerStateChange={onPanStateChangeHandler}
     >
       <View style={styles.container}>
-        <View style={styles.PaginationList}>
+        <View style={styles.paginationList}>
           {React.Children.map(props.children, (_, index) => (
             <TouchableWithoutFeedback
               key={index}
@@ -74,7 +74,7 @@ const BottomSheetSwiper: React.FC = (props) => {
             >
               <Animated.View
                 style={[
-                  styles.PaginationItem,
+                  styles.paginationItem,
                   {
                     backgroundColor: panPosition.interpolate({
                       inputRange: [
@@ -95,7 +95,7 @@ const BottomSheetSwiper: React.FC = (props) => {
 
         <View
           style={[
-            styles.SwiperList,
+            styles.swiperList,
             { width: width * childrenArray.length - 1 },
           ]}
         >
@@ -104,7 +104,7 @@ const BottomSheetSwiper: React.FC = (props) => {
               key={index}
               style={[
                 StyleSheet.absoluteFill,
-                styles.SwiperItem,
+                styles.swiperItem,
                 {
                   transform: [
                     {
@@ -135,23 +135,23 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     top: 264,
   },
-  PaginationList: {
+  paginationList: {
     justifyContent: "center",
     flexDirection: "row",
     paddingVertical: 24,
   },
-  PaginationItem: {
+  paginationItem: {
     borderRadius: 4,
     backgroundColor: "#ddd",
     marginHorizontal: 4,
     width: 8,
     height: 8,
   },
-  SwiperList: {
+  swiperList: {
     ...StyleSheet.absoluteFillObject,
     marginTop: 56,
   },
-  SwiperItem: {
+  swiperItem: {
     width,
     height,
   },

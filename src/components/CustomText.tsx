@@ -6,6 +6,8 @@ interface CustomTextProps {
   type?: "medium" | "bold";
   color?: string;
   size?: number;
+  numberOfLines?: number;
+  ellipsizeMode?: "head" | "middle" | "tail" | "clip";
 }
 
 const CustomText: React.FC<CustomTextProps> = (props) => {
@@ -42,7 +44,15 @@ const CustomText: React.FC<CustomTextProps> = (props) => {
     color: props.color ? props.color : "#333",
   };
 
-  return fontLoaded ? <Text style={fontOptions}>{props.children}</Text> : null;
+  return fontLoaded ? (
+    <Text
+      style={fontOptions}
+      numberOfLines={props.numberOfLines}
+      ellipsizeMode={props.ellipsizeMode}
+    >
+      {props.children}
+    </Text>
+  ) : null;
 };
 
 export default CustomText;
