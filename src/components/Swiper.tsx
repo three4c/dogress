@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
     marginTop: 56,
   },
   swiperItem: {
-    // width,
-    // height,
+    width,
+    height,
   },
 });
 
