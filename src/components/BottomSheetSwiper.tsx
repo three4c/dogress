@@ -17,7 +17,7 @@ import { AnimatedValue } from "react-navigation";
 
 const { width, height } = Dimensions.get("window");
 
-const Swiper: React.FC = (props) => {
+const BottomSheetSwiper: React.FC = (props) => {
   /** 子要素を配列に変換 */
   const childrenArray = React.Children.toArray(props.children);
   /** Animated.Valueもstateで操作することでアニメーションを実現 */
@@ -66,7 +66,7 @@ const Swiper: React.FC = (props) => {
       onHandlerStateChange={onPanStateChangeHandler}
     >
       <View style={styles.container}>
-        <View style={styles.swiperPaginationList}>
+        <View style={styles.PaginationList}>
           {React.Children.map(props.children, (_, index) => (
             <TouchableWithoutFeedback
               key={index}
@@ -74,7 +74,7 @@ const Swiper: React.FC = (props) => {
             >
               <Animated.View
                 style={[
-                  styles.swiperPaginationItem,
+                  styles.PaginationItem,
                   {
                     backgroundColor: panPosition.interpolate({
                       inputRange: [
@@ -92,9 +92,10 @@ const Swiper: React.FC = (props) => {
             </TouchableWithoutFeedback>
           ))}
         </View>
+
         <View
           style={[
-            styles.swiperList,
+            styles.SwiperList,
             { width: width * childrenArray.length - 1 },
           ]}
         >
@@ -103,7 +104,7 @@ const Swiper: React.FC = (props) => {
               key={index}
               style={[
                 StyleSheet.absoluteFill,
-                styles.swiperItem,
+                styles.SwiperItem,
                 {
                   transform: [
                     {
@@ -129,27 +130,31 @@ const Swiper: React.FC = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    top: 264,
   },
-  swiperPaginationList: {
+  PaginationList: {
     justifyContent: "center",
     flexDirection: "row",
     paddingVertical: 24,
   },
-  swiperPaginationItem: {
+  PaginationItem: {
     borderRadius: 4,
     backgroundColor: "#ddd",
     marginHorizontal: 4,
     width: 8,
     height: 8,
   },
-  swiperList: {
+  SwiperList: {
     ...StyleSheet.absoluteFillObject,
     marginTop: 56,
   },
-  swiperItem: {
+  SwiperItem: {
     width,
     height,
   },
 });
 
-export default Swiper;
+export default BottomSheetSwiper;
