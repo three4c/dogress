@@ -16,7 +16,7 @@ interface CardListProps {
 
 const CardList: React.FC<CardListProps> = (props) => {
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.title}>
         <CustomText>{props.title}</CustomText>
       </View>
@@ -24,7 +24,11 @@ const CardList: React.FC<CardListProps> = (props) => {
         {props.items.map((item, index) => (
           <View
             key={index}
-            style={[styles.listItem, index === 0 && { marginTop: 24 }]}
+            style={[
+              styles.listItem,
+              index === 0 && { marginTop: 16 },
+              index === props.items.length - 1 && { marginBottom: 24 },
+            ]}
           >
             <View style={styles.deadline}>
               <CustomText size={10} type="bold" color="#ccc">
@@ -45,14 +49,20 @@ const CardList: React.FC<CardListProps> = (props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
   title: {
     marginLeft: 24,
+    marginBottom: 8,
   },
   deadline: {
     marginBottom: 8,
   },
-  list: {},
+  list: {
+    /**
+     * スクロール領域を確保する
+     * 264 + 56 + 32.5 = 352.5
+     */
+    marginBottom: 352.5,
+  },
   listItem: {
     marginBottom: 16,
     marginLeft: 24,
