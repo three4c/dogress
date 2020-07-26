@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, TouchableHighlight } from "react-native";
 
 import CustomText from "./CustomText";
 
@@ -20,7 +20,7 @@ const CardList: React.FC<CardListProps> = (props) => {
       <View style={styles.title}>
         <CustomText>{props.title}</CustomText>
       </View>
-      <ScrollView style={styles.list}>
+      <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
         {props.items.map((item, index) => (
           <View
             key={index}
@@ -30,10 +30,23 @@ const CardList: React.FC<CardListProps> = (props) => {
               index === props.items.length - 1 && { marginBottom: 24 },
             ]}
           >
-            <View style={styles.deadline}>
-              <CustomText size={10} type="bold" color="#ccc">
-                {item.deadline}
-              </CustomText>
+            <View style={styles.flexArea}>
+              <View style={styles.deadline}>
+                <CustomText size={10} type="bold" color="#ccc">
+                  {item.deadline}
+                </CustomText>
+              </View>
+              <TouchableHighlight
+                underlayColor="transparent"
+                style={styles.bullet}
+                onPress={() => console.log(index)}
+              >
+                <React.Fragment>
+                  <View style={styles.bulletItem} />
+                  <View style={styles.bulletItem} />
+                  <View style={styles.bulletItem} />
+                </React.Fragment>
+              </TouchableHighlight>
             </View>
             <View>
               <CustomText numberOfLines={2} ellipsizeMode="tail">
@@ -50,7 +63,7 @@ const CardList: React.FC<CardListProps> = (props) => {
 
 const styles = StyleSheet.create({
   title: {
-    marginLeft: 24,
+    paddingLeft: 24,
     marginBottom: 8,
   },
   deadline: {
@@ -76,6 +89,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     /** Android */
     elevation: 1,
+  },
+  bullet: {
+    flexDirection: "row",
+  },
+  bulletItem: {
+    borderRadius: 4,
+    backgroundColor: "#ccc",
+    marginLeft: 2,
+    width: 4,
+    height: 4,
+  },
+  flexArea: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });
 
