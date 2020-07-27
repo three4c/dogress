@@ -53,7 +53,13 @@ const CardList: React.FC<CardListProps> = (props) => {
                 {item.description}
               </CustomText>
             </View>
-            {item.progress && <View />}
+            {item.progress && (
+              <View style={styles.progressWrapper}>
+                <View
+                  style={[styles.progress, { width: `${item.progress}%` }]}
+                />
+              </View>
+            )}
           </View>
         ))}
       </ScrollView>
@@ -65,6 +71,11 @@ const styles = StyleSheet.create({
   title: {
     paddingLeft: 24,
     marginBottom: 8,
+  },
+  flexArea: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   deadline: {
     marginBottom: 8,
@@ -100,10 +111,21 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
   },
-  flexArea: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  progressWrapper: {
+    position: "relative",
+    backgroundColor: "rgba(70, 101, 255, 0.24)",
+    borderRadius: 3,
+    overflow: "hidden",
+    marginTop: 16,
+    width: "100%",
+    height: 6,
+  },
+  progress: {
+    backgroundColor: "#4665ff",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: "100%",
   },
 });
 
