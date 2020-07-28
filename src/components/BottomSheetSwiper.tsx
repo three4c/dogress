@@ -24,7 +24,6 @@ const BottomSheetSwiper: React.FC = (props) => {
   const [panPosition] = useState(new Animated.Value(0));
   const [panStartPosition, setPanStartPosition] = useState(0);
   const [prevPanX, setPrevPanX] = useState(0);
-  const [direction, setDirection] = useState(false);
 
   const slideTo = (index: number) => {
     Animated.timing(panPosition, {
@@ -40,8 +39,6 @@ const BottomSheetSwiper: React.FC = (props) => {
 
     if (calcPosition >= 0 && calcPosition <= childrenArray.length - 1) {
       panPosition.setValue(calcPosition);
-      setDirection(event.nativeEvent.x < prevPanX);
-      setPrevPanX(event.nativeEvent.x);
     }
   };
 
@@ -49,13 +46,20 @@ const BottomSheetSwiper: React.FC = (props) => {
     event: PanGestureHandlerStateChangeEvent
   ) => {
     if (event.nativeEvent.state === State.BEGAN) {
+      setPrevPanX(event.nativeEvent.x);
+      /** @todo _valueは非推奨なので後ほど対応 */
       setPanStartPosition((panPosition as AnimatedValue)._value);
     } else if (event.nativeEvent.state === State.END) {
-      setPanStartPosition(0);
+      /** 閾値を超えるとスワイプする */
+      const thresholdX = Math.abs(event.nativeEvent.x - prevPanX) > 24;
       slideTo(
-        direction
-          ? Math.ceil((panPosition as AnimatedValue)._value)
-          : Math.floor((panPosition as AnimatedValue)._value)
+        event.nativeEvent.x < prevPanX
+          ? thresholdX
+            ? Math.ceil((panPosition as AnimatedValue)._value)
+            : Math.floor((panPosition as AnimatedValue)._value)
+          : thresholdX
+          ? Math.floor((panPosition as AnimatedValue)._value)
+          : Math.ceil((panPosition as AnimatedValue)._value)
       );
     }
   };
