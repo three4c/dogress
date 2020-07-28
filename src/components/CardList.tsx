@@ -6,7 +6,7 @@ import CustomText from "./CustomText";
 interface CardListProps {
   title: string;
   items: {
-    deadline: string;
+    deadline: number;
     description: string;
     today?: boolean;
     doneTime?: string;
@@ -33,7 +33,11 @@ const CardList: React.FC<CardListProps> = (props) => {
             <View style={styles.flexArea}>
               <View style={styles.deadline}>
                 <CustomText size={10} type="bold" color="#ccc">
-                  {item.deadline}
+                  {item.today
+                    ? "今日まで"
+                    : item.doneTime
+                    ? `${item.doneTime}に完了`
+                    : `残り${item.deadline}日`}
                 </CustomText>
               </View>
               <TouchableHighlight

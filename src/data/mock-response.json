@@ -11,7 +11,7 @@
       "doneTime": "19:00"
     },
     {
-      "deadline": "cccc",
+      "deadline": 5,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "progress": 60
     },
@@ -26,7 +26,7 @@
       "doneTime": "19:00"
     },
     {
-      "deadline": "cccc",
+      "deadline": 5,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "progress": 60
     },
@@ -41,7 +41,7 @@
       "doneTime": "19:00"
     },
     {
-      "deadline": "cccc",
+      "deadline": 5,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "progress": 60
     },
@@ -56,7 +56,7 @@
       "doneTime": "19:00"
     },
     {
-      "deadline": "cccc",
+      "deadline": 5,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "progress": 60
     },
@@ -71,7 +71,7 @@
       "doneTime": "19:00"
     },
     {
-      "deadline": "cccc",
+      "deadline": 5,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "progress": 60
     },
@@ -86,7 +86,7 @@
       "doneTime": "19:00"
     },
     {
-      "deadline": "cccc",
+      "deadline": 5,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "progress": 60
     },
@@ -101,7 +101,7 @@
       "doneTime": "19:00"
     },
     {
-      "deadline": "cccc",
+      "deadline": 5,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "progress": 60
     },
@@ -116,7 +116,7 @@
       "doneTime": "19:00"
     },
     {
-      "deadline": "cccc",
+      "deadline": 5,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "progress": 60
     }
