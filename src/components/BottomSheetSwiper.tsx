@@ -21,13 +21,27 @@ const BottomSheetSwiper: React.FC = (props) => {
   /** 子要素を配列に変換 */
   const childrenArray = React.Children.toArray(props.children);
   /** Animated.Valueもstateで操作することでアニメーションを実現 */
-  const [panPosition] = useState(new Animated.Value(0));
+  /** Swiper */
+  const [panPositionX] = useState(new Animated.Value(0));
   const [panStartPosition, setPanStartPosition] = useState(0);
   const [prevPanX, setPrevPanX] = useState(0);
+  /** BottomSheet */
+  const [panPositionY] = useState(new Animated.Value(0));
+  const [prevPanY, setPrevPanY] = useState(0);
+
+  const [direction, setDirection] = useState<"" | "x" | "y">("");
 
   const slideTo = (index: number) => {
-    Animated.timing(panPosition, {
+    Animated.timing(panPositionX, {
       toValue: index,
+      duration: 300,
+      easing: Easing.in(Easing.out(Easing.ease)),
+    }).start();
+  };
+
+  const swiperTo = (value: number) => {
+    Animated.timing(panPositionY, {
+      toValue: value,
       duration: 300,
       easing: Easing.in(Easing.out(Easing.ease)),
     }).start();
@@ -37,8 +51,21 @@ const BottomSheetSwiper: React.FC = (props) => {
     const calcPosition =
       panStartPosition - event.nativeEvent.translationX / width;
 
-    if (calcPosition >= 0 && calcPosition <= childrenArray.length - 1) {
-      panPosition.setValue(calcPosition);
+    const PEAK_X = Math.abs(prevPanX - event.nativeEvent.x);
+    const PEAK_Y = Math.abs(prevPanY - event.nativeEvent.y);
+
+    /** x or y方向のどちらに移動したかを検知 */
+    setDirection(PEAK_X < PEAK_Y ? "y" : "x");
+
+    if (direction === "x") {
+      if (calcPosition >= 0 && calcPosition <= childrenArray.length - 1) {
+        panPositionX.setValue(calcPosition);
+      }
+    }
+
+    if (direction === "y") {
+      // panPositionY.setValue(event.nativeEvent.y);
+      console.log(event.nativeEvent.y);
     }
   };
 
@@ -46,21 +73,30 @@ const BottomSheetSwiper: React.FC = (props) => {
     event: PanGestureHandlerStateChangeEvent
   ) => {
     if (event.nativeEvent.state === State.BEGAN) {
+      /** スワイプ開始時の値を保持 */
       setPrevPanX(event.nativeEvent.x);
+      setPrevPanY(event.nativeEvent.y);
+
       /** @todo _valueは非推奨なので後ほど対応 */
-      setPanStartPosition((panPosition as AnimatedValue)._value);
+      setPanStartPosition((panPositionX as AnimatedValue)._value);
     } else if (event.nativeEvent.state === State.END) {
       /** 閾値を超えるとスワイプする */
-      const thresholdX = Math.abs(event.nativeEvent.x - prevPanX) > 24;
+      const PEAK_X = Math.abs(event.nativeEvent.x - prevPanX) > 24;
+      const PEAL_Y = Math.abs(event.nativeEvent.y - prevPanY) > 24;
+
       slideTo(
         event.nativeEvent.x < prevPanX
-          ? thresholdX
-            ? Math.ceil((panPosition as AnimatedValue)._value)
-            : Math.floor((panPosition as AnimatedValue)._value)
-          : thresholdX
-          ? Math.floor((panPosition as AnimatedValue)._value)
-          : Math.ceil((panPosition as AnimatedValue)._value)
+          ? PEAK_X
+            ? Math.ceil((panPositionX as AnimatedValue)._value)
+            : Math.floor((panPositionX as AnimatedValue)._value)
+          : PEAK_X
+          ? Math.floor((panPositionX as AnimatedValue)._value)
+          : Math.ceil((panPositionX as AnimatedValue)._value)
       );
+
+      // swiperTo((panPositionY as AnimatedValue)._value);
+
+      setDirection("");
     }
   };
 
@@ -69,7 +105,7 @@ const BottomSheetSwiper: React.FC = (props) => {
       onGestureEvent={onPanHandler}
       onHandlerStateChange={onPanStateChangeHandler}
     >
-      <View style={styles.container}>
+      <Animated.View style={[StyleSheet.absoluteFill, styles.container]}>
         <View style={styles.paginationList}>
           {React.Children.map(props.children, (_, index) => (
             <TouchableWithoutFeedback
@@ -80,7 +116,7 @@ const BottomSheetSwiper: React.FC = (props) => {
                 style={[
                   styles.paginationItem,
                   {
-                    backgroundColor: panPosition.interpolate({
+                    backgroundColor: panPositionX.interpolate({
                       inputRange: [
                         index - 1,
                         index - 0.8,
@@ -112,7 +148,7 @@ const BottomSheetSwiper: React.FC = (props) => {
                 {
                   transform: [
                     {
-                      translateX: panPosition.interpolate({
+                      translateX: panPositionX.interpolate({
                         inputRange: [index - 1, index, index + 1],
                         outputRange: [width, 0, -width],
                       }),
@@ -125,7 +161,7 @@ const BottomSheetSwiper: React.FC = (props) => {
             </Animated.View>
           ))}
         </View>
-      </View>
+      </Animated.View>
     </PanGestureHandler>
   );
 };
