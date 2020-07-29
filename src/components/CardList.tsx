@@ -20,7 +20,7 @@ const CardList: React.FC<CardListProps> = (props) => {
       <View style={styles.title}>
         <CustomText>{props.title}</CustomText>
       </View>
-      <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.list}>
         {props.items.map((item, index) => (
           <View
             key={index}
