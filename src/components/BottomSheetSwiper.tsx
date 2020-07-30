@@ -23,10 +23,11 @@ const BottomSheetSwiper: React.FC = (props) => {
   /** Animated.Valueもstateで操作することでアニメーションを実現 */
   /** Swiper */
   const [panPositionX] = useState(new Animated.Value(0));
-  const [panStartPosition, setPanStartPosition] = useState(0);
+  const [panStartPositionX, setPanStartPositionX] = useState(0);
   const [prevPanX, setPrevPanX] = useState(0);
   /** BottomSheet */
-  const [panPositionY] = useState(new Animated.Value(0));
+  const [panPositionY] = useState(new Animated.Value(264));
+  const [panStartPositionY, setPanStartPositionY] = useState(0);
   const [prevPanY, setPrevPanY] = useState(0);
 
   const [direction, setDirection] = useState<"" | "x" | "y">("");
@@ -48,24 +49,31 @@ const BottomSheetSwiper: React.FC = (props) => {
   };
 
   const onPanHandler = (event: PanGestureHandlerGestureEvent) => {
-    const calcPosition =
-      panStartPosition - event.nativeEvent.translationX / width;
+    const calcPositionX =
+      panStartPositionX - event.nativeEvent.translationX / width;
+    const calcPositionY = panStartPositionY + event.nativeEvent.translationY;
 
     const PEAK_X = Math.abs(prevPanX - event.nativeEvent.x);
     const PEAK_Y = Math.abs(prevPanY - event.nativeEvent.y);
 
-    /** x or y方向のどちらに移動したかを検知 */
-    setDirection(PEAK_X < PEAK_Y ? "y" : "x");
+    /**
+     * x or y方向のどちらに移動したかを検知
+     * 方向が決定したら、指を離すまで変更しない
+     */
+    if (direction === "") {
+      setDirection(PEAK_X < PEAK_Y ? "y" : "x");
+    }
 
     if (direction === "x") {
-      if (calcPosition >= 0 && calcPosition <= childrenArray.length - 1) {
-        panPositionX.setValue(calcPosition);
+      if (calcPositionX >= 0 && calcPositionX <= childrenArray.length - 1) {
+        panPositionX.setValue(calcPositionX);
       }
     }
 
     if (direction === "y") {
-      // panPositionY.setValue(event.nativeEvent.y);
-      console.log(event.nativeEvent.y);
+      if (calcPositionY >= 72 && calcPositionY <= 264) {
+        panPositionY.setValue(calcPositionY);
+      }
     }
   };
 
@@ -78,23 +86,36 @@ const BottomSheetSwiper: React.FC = (props) => {
       setPrevPanY(event.nativeEvent.y);
 
       /** @todo _valueは非推奨なので後ほど対応 */
-      setPanStartPosition((panPositionX as AnimatedValue)._value);
+      setPanStartPositionX((panPositionX as AnimatedValue)._value);
+      setPanStartPositionY((panPositionY as AnimatedValue)._value);
     } else if (event.nativeEvent.state === State.END) {
       /** 閾値を超えるとスワイプする */
       const PEAK_X = Math.abs(event.nativeEvent.x - prevPanX) > 24;
-      const PEAL_Y = Math.abs(event.nativeEvent.y - prevPanY) > 24;
+      const PEAK_Y = Math.abs(event.nativeEvent.y - prevPanY) > 24;
 
-      slideTo(
-        event.nativeEvent.x < prevPanX
-          ? PEAK_X
-            ? Math.ceil((panPositionX as AnimatedValue)._value)
-            : Math.floor((panPositionX as AnimatedValue)._value)
-          : PEAK_X
-          ? Math.floor((panPositionX as AnimatedValue)._value)
-          : Math.ceil((panPositionX as AnimatedValue)._value)
-      );
+      if (direction === "x") {
+        slideTo(
+          event.nativeEvent.x < prevPanX
+            ? PEAK_X
+              ? Math.ceil((panPositionX as AnimatedValue)._value)
+              : Math.floor((panPositionX as AnimatedValue)._value)
+            : PEAK_X
+            ? Math.floor((panPositionX as AnimatedValue)._value)
+            : Math.ceil((panPositionX as AnimatedValue)._value)
+        );
+      }
 
-      // swiperTo((panPositionY as AnimatedValue)._value);
+      if (direction === "y") {
+        swiperTo(
+          event.nativeEvent.y < prevPanY
+            ? PEAK_Y
+              ? 72
+              : 264
+            : PEAK_Y
+            ? 264
+            : 72
+        );
+      }
 
       setDirection("");
     }
@@ -105,7 +126,13 @@ const BottomSheetSwiper: React.FC = (props) => {
       onGestureEvent={onPanHandler}
       onHandlerStateChange={onPanStateChangeHandler}
     >
-      <Animated.View style={[StyleSheet.absoluteFill, styles.container]}>
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFill,
+          styles.container,
+          { transform: [{ translateY: panPositionY }] },
+        ]}
+      >
         <View style={styles.paginationList}>
           {React.Children.map(props.children, (_, index) => (
             <TouchableWithoutFeedback
@@ -169,11 +196,9 @@ const BottomSheetSwiper: React.FC = (props) => {
 /** 　width, heightを予めもたせることでパフォーマンス向上を狙う */
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#fff",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    top: 264,
   },
   paginationList: {
     justifyContent: "center",

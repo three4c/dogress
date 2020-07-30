@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { StyleSheet, View, ScrollView, TouchableHighlight } from "react-native";
 
 import CustomText from "./CustomText";
@@ -15,12 +15,22 @@ interface CardListProps {
 }
 
 const CardList: React.FC<CardListProps> = (props) => {
+  // const [scrollHeight, setScrollHeight] = useState(0);
+  // const ref = useRef<View>(null);
+
+  // useEffect(() => {
+  //   ref.current?.measure((x, y, width, height, pageX, pageY) => {
+  //     setScrollHeight(pageY + 24.5);
+  //   });
+  // }, [ref.current]);
+
   return (
     <View>
       <View style={styles.title}>
         <CustomText>{props.title}</CustomText>
       </View>
-      <ScrollView style={styles.list}>
+      {/* <View ref={ref}> */}
+      <ScrollView style={{ marginBottom: 264 + 56 + 32.5 }}>
         {props.items.map((item, index) => (
           <View
             key={index}
@@ -67,6 +77,7 @@ const CardList: React.FC<CardListProps> = (props) => {
           </View>
         ))}
       </ScrollView>
+      {/* </View> */}
     </View>
   );
 };
@@ -83,13 +94,6 @@ const styles = StyleSheet.create({
   },
   deadline: {
     marginBottom: 8,
-  },
-  list: {
-    /**
-     * スクロール領域を確保する
-     * 264 + 56 + 32.5 = 352.5
-     */
-    marginBottom: 352.5,
   },
   listItem: {
     marginBottom: 16,

@@ -1,12 +1,12 @@
 {
   "items": [
     {
-      "deadline": "aaaa",
+      "deadline": 0,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "today": true
     },
     {
-      "deadline": "bbbb",
+      "deadline": 1,
       "description": "Lorem",
       "doneTime": "19:00"
     },
@@ -16,12 +16,12 @@
       "progress": 60
     },
     {
-      "deadline": "aaaa",
+      "deadline": 0,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "today": true
     },
     {
-      "deadline": "bbbb",
+      "deadline": 1,
       "description": "Lorem",
       "doneTime": "19:00"
     },
@@ -31,12 +31,12 @@
       "progress": 60
     },
     {
-      "deadline": "aaaa",
+      "deadline": 0,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "today": true
     },
     {
-      "deadline": "bbbb",
+      "deadline": 1,
       "description": "Lorem",
       "doneTime": "19:00"
     },
@@ -46,12 +46,12 @@
       "progress": 60
     },
     {
-      "deadline": "aaaa",
+      "deadline": 0,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "today": true
     },
     {
-      "deadline": "bbbb",
+      "deadline": 1,
       "description": "Lorem",
       "doneTime": "19:00"
     },
@@ -61,12 +61,12 @@
       "progress": 60
     },
     {
-      "deadline": "aaaa",
+      "deadline": 0,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "today": true
     },
     {
-      "deadline": "bbbb",
+      "deadline": 1,
       "description": "Lorem",
       "doneTime": "19:00"
     },
@@ -76,12 +76,12 @@
       "progress": 60
     },
     {
-      "deadline": "aaaa",
+      "deadline": 0,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "today": true
     },
     {
-      "deadline": "bbbb",
+      "deadline": 1,
       "description": "Lorem",
       "doneTime": "19:00"
     },
@@ -91,12 +91,12 @@
       "progress": 60
     },
     {
-      "deadline": "aaaa",
+      "deadline": 0,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "today": true
     },
     {
-      "deadline": "bbbb",
+      "deadline": 1,
       "description": "Lorem",
       "doneTime": "19:00"
     },
@@ -106,12 +106,12 @@
       "progress": 60
     },
     {
-      "deadline": "aaaa",
+      "deadline": 0,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
       "today": true
     },
     {
-      "deadline": "bbbb",
+      "deadline": 1,
       "description": "Lorem",
       "doneTime": "19:00"
     },
