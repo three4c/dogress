@@ -15,9 +15,13 @@ import {
 } from "react-native-gesture-handler";
 import { AnimatedValue } from "react-navigation";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
-const BottomSheetSwiper: React.FC = (props) => {
+interface BottomSheetSwiperProps {
+  swipeUpFn: (isSwipeUp: boolean) => void;
+}
+
+const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
   /** 子要素を配列に変換 */
   const childrenArray = React.Children.toArray(props.children);
   /** Animated.Valueもstateで操作することでアニメーションを実現 */
@@ -53,8 +57,8 @@ const BottomSheetSwiper: React.FC = (props) => {
       panStartPositionX - event.nativeEvent.translationX / width;
     const calcPositionY = panStartPositionY + event.nativeEvent.translationY;
 
-    const PEAK_X = Math.abs(prevPanX - event.nativeEvent.x);
-    const PEAK_Y = Math.abs(prevPanY - event.nativeEvent.y);
+    const PEAK_X = Math.abs(prevPanX - event.nativeEvent.translationX);
+    const PEAK_Y = Math.abs(prevPanY - event.nativeEvent.translationY);
 
     /**
      * x or y方向のどちらに移動したかを検知
@@ -74,6 +78,10 @@ const BottomSheetSwiper: React.FC = (props) => {
       if (calcPositionY >= 72 && calcPositionY <= 264) {
         panPositionY.setValue(calcPositionY);
       }
+
+      if (event.nativeEvent.translationY < prevPanY) {
+        props.swipeUpFn(true);
+      }
     }
   };
 
@@ -82,20 +90,20 @@ const BottomSheetSwiper: React.FC = (props) => {
   ) => {
     if (event.nativeEvent.state === State.BEGAN) {
       /** スワイプ開始時の値を保持 */
-      setPrevPanX(event.nativeEvent.x);
-      setPrevPanY(event.nativeEvent.y);
+      setPrevPanX(event.nativeEvent.translationX);
+      setPrevPanY(event.nativeEvent.translationY);
 
       /** @todo _valueは非推奨なので後ほど対応 */
       setPanStartPositionX((panPositionX as AnimatedValue)._value);
       setPanStartPositionY((panPositionY as AnimatedValue)._value);
     } else if (event.nativeEvent.state === State.END) {
       /** 閾値を超えるとスワイプする */
-      const PEAK_X = Math.abs(event.nativeEvent.x - prevPanX) > 24;
-      const PEAK_Y = Math.abs(event.nativeEvent.y - prevPanY) > 24;
+      const PEAK_X = Math.abs(event.nativeEvent.translationX - prevPanX) > 24;
+      const PEAK_Y = Math.abs(event.nativeEvent.translationY - prevPanY) > 24;
 
       if (direction === "x") {
         slideTo(
-          event.nativeEvent.x < prevPanX
+          event.nativeEvent.translationX < prevPanX
             ? PEAK_X
               ? Math.ceil((panPositionX as AnimatedValue)._value)
               : Math.floor((panPositionX as AnimatedValue)._value)
@@ -107,7 +115,7 @@ const BottomSheetSwiper: React.FC = (props) => {
 
       if (direction === "y") {
         swiperTo(
-          event.nativeEvent.y < prevPanY
+          event.nativeEvent.translationY < prevPanY
             ? PEAK_Y
               ? 72
               : 264
@@ -115,6 +123,12 @@ const BottomSheetSwiper: React.FC = (props) => {
             ? 264
             : 72
         );
+
+        if (event.nativeEvent.translationY > prevPanY) {
+          setTimeout(() => {
+            props.swipeUpFn(false);
+          }, 300);
+        }
       }
 
       setDirection("");
@@ -218,7 +232,7 @@ const styles = StyleSheet.create({
   },
   swiperItem: {
     width,
-    height,
+    // height,
   },
 });
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import CardList from "../components/CardList";
@@ -10,6 +10,8 @@ import Title from "../components/Title";
 import mockResponse from "../data/mock-response.json";
 
 const MainScreen = () => {
+  const [isSwipeUp, setSwipeUp] = useState(false);
+
   return (
     <View style={styles.container}>
       <View>
@@ -19,17 +21,20 @@ const MainScreen = () => {
           </CustomText>
         </Title>
       </View>
-      <BottomSheetSwiper>
+      <BottomSheetSwiper swipeUpFn={setSwipeUp}>
         <CardList
           title="残り"
+          isSwipeUp={isSwipeUp}
           items={mockResponse.items.filter((item) => item.today)}
         />
         <CardList
           title="完了"
+          isSwipeUp={isSwipeUp}
           items={mockResponse.items.filter((item) => item.doneTime)}
         />
         <CardList
           title="進行中"
+          isSwipeUp={isSwipeUp}
           items={mockResponse.items.filter((item) => item.progress)}
         />
       </BottomSheetSwiper>

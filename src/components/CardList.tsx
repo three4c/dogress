@@ -5,6 +5,7 @@ import CustomText from "./CustomText";
 
 interface CardListProps {
   title: string;
+  isSwipeUp: boolean;
   items: {
     deadline: number;
     description: string;
@@ -30,7 +31,9 @@ const CardList: React.FC<CardListProps> = (props) => {
         <CustomText>{props.title}</CustomText>
       </View>
       {/* <View ref={ref}> */}
-      <ScrollView style={{ marginBottom: 264 + 56 + 32.5 }}>
+      <ScrollView
+        style={{ marginBottom: props.isSwipeUp ? 72 + 32.5 : 264 + 32.5 }}
+      >
         {props.items.map((item, index) => (
           <View
             key={index}
