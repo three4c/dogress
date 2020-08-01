@@ -19,6 +19,7 @@ const { width } = Dimensions.get("window");
 
 interface BottomSheetSwiperProps {
   swipeUpFn: (isSwipeUp: boolean) => void;
+  isSlide?: boolean;
 }
 
 const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
@@ -147,61 +148,67 @@ const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
           { transform: [{ translateY: panPositionY }] },
         ]}
       >
-        <View style={styles.paginationList}>
-          {React.Children.map(props.children, (_, index) => (
-            <TouchableWithoutFeedback
-              key={index}
-              onPress={() => slideTo(index)}
-            >
-              <Animated.View
-                style={[
-                  styles.paginationItem,
-                  {
-                    backgroundColor: panPositionX.interpolate({
-                      inputRange: [
-                        index - 1,
-                        index - 0.8,
-                        index,
-                        index + 0.8,
-                        index + 1,
-                      ],
-                      outputRange: ["#ddd", "#ddd", "#333", "#ddd", "#ddd"],
-                    }),
-                  },
-                ]}
-              />
-            </TouchableWithoutFeedback>
-          ))}
-        </View>
+        {props.isSlide ? (
+          <React.Fragment>
+            <View style={styles.paginationList}>
+              {React.Children.map(props.children, (_, index) => (
+                <TouchableWithoutFeedback
+                  key={index}
+                  onPress={() => slideTo(index)}
+                >
+                  <Animated.View
+                    style={[
+                      styles.paginationItem,
+                      {
+                        backgroundColor: panPositionX.interpolate({
+                          inputRange: [
+                            index - 1,
+                            index - 0.8,
+                            index,
+                            index + 0.8,
+                            index + 1,
+                          ],
+                          outputRange: ["#ddd", "#ddd", "#333", "#ddd", "#ddd"],
+                        }),
+                      },
+                    ]}
+                  />
+                </TouchableWithoutFeedback>
+              ))}
+            </View>
 
-        <View
-          style={[
-            styles.swiperList,
-            { width: width * childrenArray.length - 1 },
-          ]}
-        >
-          {React.Children.map(props.children, (child, index) => (
-            <Animated.View
-              key={index}
+            <View
               style={[
-                StyleSheet.absoluteFill,
-                styles.swiperItem,
-                {
-                  transform: [
-                    {
-                      translateX: panPositionX.interpolate({
-                        inputRange: [index - 1, index, index + 1],
-                        outputRange: [width, 0, -width],
-                      }),
-                    },
-                  ],
-                },
+                styles.swiperList,
+                { width: width * childrenArray.length - 1 },
               ]}
             >
-              {child}
-            </Animated.View>
-          ))}
-        </View>
+              {React.Children.map(props.children, (child, index) => (
+                <Animated.View
+                  key={index}
+                  style={[
+                    StyleSheet.absoluteFill,
+                    styles.swiperItem,
+                    {
+                      transform: [
+                        {
+                          translateX: panPositionX.interpolate({
+                            inputRange: [index - 1, index, index + 1],
+                            outputRange: [width, 0, -width],
+                          }),
+                        },
+                      ],
+                    },
+                  ]}
+                >
+                  {child}
+                </Animated.View>
+              ))}
+            </View>
+          </React.Fragment>
+        ) : (
+          <View>{props.children}</View>
+        )}
       </Animated.View>
     </PanGestureHandler>
   );

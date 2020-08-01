@@ -21,7 +21,7 @@ const MainScreen = () => {
           </CustomText>
         </Title>
       </View>
-      <BottomSheetSwiper swipeUpFn={setSwipeUp}>
+      <BottomSheetSwiper isSlide swipeUpFn={setSwipeUp}>
         <CardList
           title="残り"
           isSwipeUp={isSwipeUp}
