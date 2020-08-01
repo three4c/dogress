@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { StyleSheet, View, ScrollView, TouchableHighlight } from "react-native";
 
 import CustomText from "./CustomText";
@@ -6,6 +6,7 @@ import CustomText from "./CustomText";
 interface CardListProps {
   title: string;
   isSwipeUp: boolean;
+  shonFn: (isShow: boolean) => void;
   items: {
     deadline: number;
     description: string;
@@ -16,21 +17,11 @@ interface CardListProps {
 }
 
 const CardList: React.FC<CardListProps> = (props) => {
-  // const [scrollHeight, setScrollHeight] = useState(0);
-  // const ref = useRef<View>(null);
-
-  // useEffect(() => {
-  //   ref.current?.measure((x, y, width, height, pageX, pageY) => {
-  //     setScrollHeight(pageY + 24.5);
-  //   });
-  // }, [ref.current]);
-
   return (
     <View>
       <View style={styles.title}>
         <CustomText>{props.title}</CustomText>
       </View>
-      {/* <View ref={ref}> */}
       <ScrollView
         style={{ marginBottom: props.isSwipeUp ? 72 + 32.5 : 264 + 32.5 }}
       >
@@ -43,28 +34,26 @@ const CardList: React.FC<CardListProps> = (props) => {
               index === props.items.length - 1 && { marginBottom: 24 },
             ]}
           >
-            <View style={styles.flexArea}>
-              <View style={styles.deadline}>
-                <CustomText size={10} type="bold" color="#ccc">
-                  {item.today
-                    ? "今日まで"
-                    : item.doneTime
-                    ? `${item.doneTime}に完了`
-                    : `残り${item.deadline}日`}
-                </CustomText>
-              </View>
-              <TouchableHighlight
-                underlayColor="transparent"
-                style={styles.bullet}
-                onPress={() => console.log(index)}
-              >
-                <React.Fragment>
-                  <View style={styles.bulletItem} />
-                  <View style={styles.bulletItem} />
-                  <View style={styles.bulletItem} />
-                </React.Fragment>
-              </TouchableHighlight>
+            <View style={styles.deadline}>
+              <CustomText size={10} type="bold" color="#ccc">
+                {item.today
+                  ? "今日まで"
+                  : item.doneTime
+                  ? `${item.doneTime}に完了`
+                  : `残り${item.deadline}日`}
+              </CustomText>
             </View>
+            <TouchableHighlight
+              style={styles.button}
+              underlayColor="transparent"
+              onPress={() => props.shonFn(true)}
+            >
+              <View style={styles.bullet}>
+                <View style={styles.bulletItem} />
+                <View style={styles.bulletItem} />
+                <View style={styles.bulletItem} />
+              </View>
+            </TouchableHighlight>
             <View>
               <CustomText numberOfLines={2} ellipsizeMode="tail">
                 {item.description}
@@ -111,6 +100,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     /** Android */
     elevation: 1,
+  },
+  button: {
+    position: "absolute",
+    top: 12,
+    right: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 24,
+    height: 24,
   },
   bullet: {
     flexDirection: "row",

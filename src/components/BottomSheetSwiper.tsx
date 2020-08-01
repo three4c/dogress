@@ -19,7 +19,6 @@ const { width } = Dimensions.get("window");
 
 interface BottomSheetSwiperProps {
   swipeUpFn: (isSwipeUp: boolean) => void;
-  isSlide?: boolean;
 }
 
 const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
@@ -34,13 +33,14 @@ const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
   const [panPositionY] = useState(new Animated.Value(264));
   const [panStartPositionY, setPanStartPositionY] = useState(0);
   const [prevPanY, setPrevPanY] = useState(0);
-
   const [direction, setDirection] = useState<"" | "x" | "y">("");
+
+  const DURATION_TIME = 200;
 
   const slideTo = (index: number) => {
     Animated.timing(panPositionX, {
       toValue: index,
-      duration: 300,
+      duration: DURATION_TIME,
       easing: Easing.in(Easing.out(Easing.ease)),
     }).start();
   };
@@ -48,7 +48,7 @@ const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
   const swiperTo = (value: number) => {
     Animated.timing(panPositionY, {
       toValue: value,
-      duration: 300,
+      duration: DURATION_TIME,
       easing: Easing.in(Easing.out(Easing.ease)),
     }).start();
   };
@@ -128,7 +128,7 @@ const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
         if (event.nativeEvent.translationY > prevPanY) {
           setTimeout(() => {
             props.swipeUpFn(false);
-          }, 300);
+          }, DURATION_TIME);
         }
       }
 
@@ -148,67 +148,62 @@ const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
           { transform: [{ translateY: panPositionY }] },
         ]}
       >
-        {props.isSlide ? (
-          <React.Fragment>
-            <View style={styles.paginationList}>
-              {React.Children.map(props.children, (_, index) => (
-                <TouchableWithoutFeedback
-                  key={index}
-                  onPress={() => slideTo(index)}
-                >
-                  <Animated.View
-                    style={[
-                      styles.paginationItem,
-                      {
-                        backgroundColor: panPositionX.interpolate({
-                          inputRange: [
-                            index - 1,
-                            index - 0.8,
-                            index,
-                            index + 0.8,
-                            index + 1,
-                          ],
-                          outputRange: ["#ddd", "#ddd", "#333", "#ddd", "#ddd"],
-                        }),
-                      },
-                    ]}
-                  />
-                </TouchableWithoutFeedback>
-              ))}
-            </View>
+        <View style={styles.paginationList}>
+          {React.Children.map(props.children, (_, index) => (
+            <TouchableWithoutFeedback
+              key={index}
+              onPress={() => slideTo(index)}
+            >
+              <Animated.View
+                style={[
+                  styles.paginationItem,
+                  {
+                    backgroundColor: panPositionX.interpolate({
+                      inputRange: [
+                        index - 1,
+                        index - 0.8,
+                        index,
+                        index + 0.8,
+                        index + 1,
+                      ],
+                      outputRange: ["#ddd", "#ddd", "#333", "#ddd", "#ddd"],
+                    }),
+                  },
+                ]}
+              />
+            </TouchableWithoutFeedback>
+          ))}
+        </View>
 
-            <View
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            styles.swiperList,
+            { width: width * childrenArray.length - 1 },
+          ]}
+        >
+          {React.Children.map(props.children, (child, index) => (
+            <Animated.View
+              key={index}
               style={[
-                styles.swiperList,
-                { width: width * childrenArray.length - 1 },
+                StyleSheet.absoluteFill,
+                styles.swiperItem,
+                {
+                  transform: [
+                    {
+                      translateX: panPositionX.interpolate({
+                        inputRange: [index - 1, index, index + 1],
+                        outputRange: [width, 0, -width],
+                      }),
+                    },
+                  ],
+                },
               ]}
             >
-              {React.Children.map(props.children, (child, index) => (
-                <Animated.View
-                  key={index}
-                  style={[
-                    StyleSheet.absoluteFill,
-                    styles.swiperItem,
-                    {
-                      transform: [
-                        {
-                          translateX: panPositionX.interpolate({
-                            inputRange: [index - 1, index, index + 1],
-                            outputRange: [width, 0, -width],
-                          }),
-                        },
-                      ],
-                    },
-                  ]}
-                >
-                  {child}
-                </Animated.View>
-              ))}
-            </View>
-          </React.Fragment>
-        ) : (
-          <View>{props.children}</View>
-        )}
+              {child}
+            </Animated.View>
+          ))}
+        </View>
       </Animated.View>
     </PanGestureHandler>
   );
@@ -234,12 +229,10 @@ const styles = StyleSheet.create({
     height: 8,
   },
   swiperList: {
-    ...StyleSheet.absoluteFillObject,
     marginTop: 56,
   },
   swiperItem: {
     width,
-    // height,
   },
 });
 
