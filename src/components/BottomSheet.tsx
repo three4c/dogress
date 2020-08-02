@@ -7,11 +7,11 @@ import {
   State,
 } from "react-native-gesture-handler";
 
-import CustomText from "./CustomText";
 import { AnimatedValue } from "react-navigation";
 
 interface BottomSheetProps {
-  showFn: (isShow: boolean) => void;
+  isShow: boolean;
+  closeFn: () => void;
 }
 
 const BottomSheet: React.FC<BottomSheetProps> = (props) => {
@@ -20,6 +20,7 @@ const BottomSheet: React.FC<BottomSheetProps> = (props) => {
   const [panStartPositionY, setPanStartPositionY] = useState(0);
   const [prevPanY, setPrevPanY] = useState(0);
   const [bottomSheetHeight, setBottomSheetHeight] = useState(0);
+  const [isShow, setShow] = useState(false);
 
   const DURATION_TIME = 200;
 
@@ -38,7 +39,7 @@ const BottomSheet: React.FC<BottomSheetProps> = (props) => {
 
   const opacityTo = (value: number) => {
     Animated.timing(backgroundOpacity, {
-      toValue: value === 0 ? 1 : 0,
+      toValue: value,
       duration: DURATION_TIME,
       easing: Easing.in(Easing.out(Easing.ease)),
     }).start();
@@ -69,27 +70,39 @@ const BottomSheet: React.FC<BottomSheetProps> = (props) => {
 
       if (event.nativeEvent.translationY > prevPanY && PEAK_Y) {
         setTimeout(() => {
-          opacityTo(1);
+          opacityTo(0);
         }, DURATION_TIME);
 
         setTimeout(() => {
-          props.showFn(false);
+          props.closeFn();
         }, DURATION_TIME * 2);
       }
     }
   };
 
   useEffect(() => {
-    opacityTo(0);
+    if (props.isShow) {
+      opacityTo(1);
 
-    setTimeout(() => {
-      Animated.timing(panPositionY, {
-        toValue: 0,
-        duration: DURATION_TIME,
-        easing: Easing.in(Easing.out(Easing.ease)),
-      }).start();
-    }, 100);
-  }, []);
+      setTimeout(() => {
+        swiperTo(0);
+      }, 50);
+    } else {
+      setTimeout(() => {
+        swiperTo(bottomSheetHeight);
+      }, 50);
+
+      setTimeout(() => {
+        opacityTo(0);
+      }, DURATION_TIME);
+
+      setTimeout(() => {
+        setShow(false);
+      }, DURATION_TIME * 2);
+    }
+
+    return () => setShow(true);
+  }, [props.isShow]);
 
   return (
     <PanGestureHandler
@@ -100,7 +113,7 @@ const BottomSheet: React.FC<BottomSheetProps> = (props) => {
         style={[
           StyleSheet.absoluteFill,
           styles.container,
-          { opacity: backgroundOpacity },
+          { opacity: backgroundOpacity, display: isShow ? "" : "none" },
         ]}
       >
         <Animated.View style={{ transform: [{ translateY: panPositionY }] }}>
@@ -111,14 +124,7 @@ const BottomSheet: React.FC<BottomSheetProps> = (props) => {
             }}
           >
             <View style={styles.chip} />
-            <View style={styles.content}>
-              <CustomText>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint
-                nemo deserunt voluptas commodi vel quis voluptatum ea voluptate
-                in excepturi debitis iusto facere eligendi laboriosam doloribus,
-                tenetur beatae fugiat vitae.
-              </CustomText>
-            </View>
+            <View style={styles.content}>{props.children}</View>
           </View>
         </Animated.View>
       </Animated.View>
@@ -145,7 +151,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
   },
   content: {
-    padding: 24,
+    paddingTop: 16,
+    paddingHorizontal: 24,
+    paddingBottom: 16,
+    textAlign: "left",
+    width: "100%",
   },
 });
 

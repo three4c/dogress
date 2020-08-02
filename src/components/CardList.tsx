@@ -6,7 +6,7 @@ import CustomText from "./CustomText";
 interface CardListProps {
   title: string;
   isSwipeUp: boolean;
-  shonFn: (isShow: boolean) => void;
+  openFn: () => void;
   items: {
     deadline: number;
     description: string;
@@ -46,7 +46,7 @@ const CardList: React.FC<CardListProps> = (props) => {
             <TouchableHighlight
               style={styles.button}
               underlayColor="transparent"
-              onPress={() => props.shonFn(true)}
+              onPress={props.openFn}
             >
               <View style={styles.bullet}>
                 <View style={styles.bulletItem} />

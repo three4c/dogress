@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TouchableHighlight } from "react-native";
 
 import BottomSheet from "../components/BottomSheet";
 import BottomSheetSwiper from "../components/BottomSheetSwiper";
@@ -27,23 +27,39 @@ const MainScreen = () => {
         <CardList
           title="残り"
           isSwipeUp={isSwipeUp}
-          shonFn={setShow}
+          openFn={() => setShow(true)}
           items={mockResponse.items.filter((item) => item.today)}
         />
         <CardList
           title="完了"
           isSwipeUp={isSwipeUp}
-          shonFn={setShow}
+          openFn={() => setShow(true)}
           items={mockResponse.items.filter((item) => item.doneTime)}
         />
         <CardList
           title="進行中"
           isSwipeUp={isSwipeUp}
-          shonFn={setShow}
+          openFn={() => setShow(true)}
           items={mockResponse.items.filter((item) => item.progress)}
         />
       </BottomSheetSwiper>
-      {isShow && <BottomSheet showFn={setShow} />}
+      <BottomSheet isShow={isShow} closeFn={() => setShow(false)}>
+        <View style={styles.menu}>
+          <CustomText type="bold" color="#e0245e">
+            削除
+          </CustomText>
+        </View>
+        <View style={styles.menu}>
+          <CustomText type="bold">タスクを編集する</CustomText>
+        </View>
+        <TouchableHighlight
+          style={styles.menu}
+          underlayColor="transparent"
+          onPress={() => setShow(false)}
+        >
+          <CustomText type="bold">キャンセル</CustomText>
+        </TouchableHighlight>
+      </BottomSheet>
     </View>
   );
 };
@@ -52,6 +68,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#4665ff",
+  },
+  menu: {
+    padding: 8,
   },
 });
 
