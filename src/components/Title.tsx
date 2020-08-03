@@ -7,9 +7,10 @@ const Title: React.FC = (props) => (
 
 const styles = StyleSheet.create({
   title: {
-    position: "absolute",
-    top: 72,
-    left: 24,
+    marginTop: 72,
+    marginLeft: 24,
+    textAlign: "left",
+    width: "100%",
   },
 });
 

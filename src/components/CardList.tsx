@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View, ScrollView, TouchableHighlight } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import CustomText from "./CustomText";
 
@@ -22,54 +23,62 @@ const CardList: React.FC<CardListProps> = (props) => {
       <View style={styles.title}>
         <CustomText>{props.title}</CustomText>
       </View>
-      <ScrollView
-        style={{ marginBottom: props.isSwipeUp ? 72 + 32.5 : 264 + 32.5 }}
-      >
-        {props.items.map((item, index) => (
-          <View
-            key={index}
-            style={[
-              styles.listItem,
-              index === 0 && { marginTop: 16 },
-              index === props.items.length - 1 && { marginBottom: 24 },
-            ]}
-          >
-            <View style={styles.deadline}>
-              <CustomText size={10} type="bold" color="#ccc">
-                {item.today
-                  ? "今日まで"
-                  : item.doneTime
-                  ? `${item.doneTime}に完了`
-                  : `残り${item.deadline}日`}
-              </CustomText>
-            </View>
-            <TouchableHighlight
-              style={styles.button}
-              underlayColor="transparent"
-              onPress={props.openFn}
+      <View style={styles.list}>
+        <LinearGradient
+          colors={["rgba(255, 255, 255, 1)", "rgba(255, 255, 255, 0)"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.gradient}
+        />
+        <ScrollView
+          style={{
+            marginBottom: props.isSwipeUp ? 72 + 32.5 : 264 + 32.5,
+          }}
+        >
+          {props.items.map((item, index) => (
+            <View
+              key={index}
+              style={[
+                styles.listItem,
+                index === props.items.length - 1 && { marginBottom: 24 },
+              ]}
             >
-              <View style={styles.bullet}>
-                <View style={styles.bulletItem} />
-                <View style={styles.bulletItem} />
-                <View style={styles.bulletItem} />
+              <View style={styles.deadline}>
+                <CustomText size={10} type="bold" color="#ccc">
+                  {item.today
+                    ? "今日まで"
+                    : item.doneTime
+                    ? `${item.doneTime}に完了`
+                    : `残り${item.deadline}日`}
+                </CustomText>
               </View>
-            </TouchableHighlight>
-            <View>
-              <CustomText numberOfLines={2} ellipsizeMode="tail">
-                {item.description}
-              </CustomText>
+              <TouchableHighlight
+                style={styles.button}
+                underlayColor="transparent"
+                onPress={props.openFn}
+              >
+                <View style={styles.bullet}>
+                  <View style={styles.bulletItem} />
+                  <View style={styles.bulletItem} />
+                  <View style={styles.bulletItem} />
+                </View>
+              </TouchableHighlight>
+              <View>
+                <CustomText numberOfLines={2} ellipsizeMode="tail">
+                  {item.description}
+                </CustomText>
+              </View>
+              {item.progress && (
+                <View style={styles.progressWrapper}>
+                  <View
+                    style={[styles.progress, { width: `${item.progress}%` }]}
+                  />
+                </View>
+              )}
             </View>
-            {item.progress && (
-              <View style={styles.progressWrapper}>
-                <View
-                  style={[styles.progress, { width: `${item.progress}%` }]}
-                />
-              </View>
-            )}
-          </View>
-        ))}
-      </ScrollView>
-      {/* </View> */}
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -87,8 +96,21 @@ const styles = StyleSheet.create({
   deadline: {
     marginBottom: 8,
   },
+  gradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: 24,
+    zIndex: 2,
+  },
+
+  list: {
+    position: "relative",
+    marginBottom: 32,
+  },
   listItem: {
-    marginBottom: 16,
+    marginTop: 16,
     marginLeft: 24,
     marginRight: 24,
     backgroundColor: "#fff",

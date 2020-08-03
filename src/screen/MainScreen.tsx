@@ -4,43 +4,54 @@ import { StyleSheet, View, TouchableHighlight } from "react-native";
 import BottomSheet from "../components/BottomSheet";
 import BottomSheetSwiper from "../components/BottomSheetSwiper";
 import CardList from "../components/CardList";
+import CauntBoard from "../components/CountBoard";
 import CustomText from "../components/CustomText";
 import Title from "../components/Title";
 
 /** @todo 後で消す */
 import mockResponse from "../data/mock-response.json";
+import CountBoard from "../components/CountBoard";
 
 const MainScreen = () => {
   const [isSwipeUp, setSwipeUp] = useState(false);
   const [isShow, setShow] = useState(false);
 
+  const remaining = mockResponse.items.filter((item) => item.today);
+  const done = mockResponse.items.filter((item) => item.doneTime);
+  const progress = mockResponse.items.filter((item) => item.progress);
+
   return (
     <View style={styles.container}>
-      <View>
+      <View style={styles.title}>
         <Title>
           <CustomText color="#fff" size={24}>
             タスク
           </CustomText>
         </Title>
       </View>
+      <CountBoard
+        remaining={remaining.length}
+        done={done.length}
+        progress={progress.length}
+      />
       <BottomSheetSwiper swipeUpFn={setSwipeUp}>
         <CardList
           title="残り"
           isSwipeUp={isSwipeUp}
           openFn={() => setShow(true)}
-          items={mockResponse.items.filter((item) => item.today)}
+          items={remaining}
         />
         <CardList
           title="完了"
           isSwipeUp={isSwipeUp}
           openFn={() => setShow(true)}
-          items={mockResponse.items.filter((item) => item.doneTime)}
+          items={done}
         />
         <CardList
           title="進行中"
           isSwipeUp={isSwipeUp}
           openFn={() => setShow(true)}
-          items={mockResponse.items.filter((item) => item.progress)}
+          items={progress}
         />
       </BottomSheetSwiper>
       <BottomSheet isShow={isShow} closeFn={() => setShow(false)}>
@@ -68,6 +79,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#4665ff",
+  },
+  title: {
+    marginBottom: 48,
   },
   menu: {
     padding: 8,
