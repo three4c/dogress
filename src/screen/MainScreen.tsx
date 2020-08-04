@@ -4,18 +4,17 @@ import { StyleSheet, View, TouchableHighlight } from "react-native";
 import BottomSheet from "../components/BottomSheet";
 import BottomSheetSwiper from "../components/BottomSheetSwiper";
 import CardList from "../components/CardList";
-import CauntBoard from "../components/CountBoard";
+import CountBoard from "../components/CountBoard";
 import CustomText from "../components/CustomText";
+import CircleButton from "../components/CircleButton";
 import Title from "../components/Title";
 
 /** @todo 後で消す */
 import mockResponse from "../data/mock-response.json";
-import CountBoard from "../components/CountBoard";
 
 const MainScreen = () => {
   const [isSwipeUp, setSwipeUp] = useState(false);
   const [isShow, setShow] = useState(false);
-
   const remaining = mockResponse.items.filter((item) => item.today);
   const done = mockResponse.items.filter((item) => item.doneTime);
   const progress = mockResponse.items.filter((item) => item.progress);
@@ -54,6 +53,7 @@ const MainScreen = () => {
           items={progress}
         />
       </BottomSheetSwiper>
+      <CircleButton openFn={() => console.log("hoge")} />
       <BottomSheet isShow={isShow} closeFn={() => setShow(false)}>
         <View style={styles.menu}>
           <CustomText type="bold" color="#e0245e">
