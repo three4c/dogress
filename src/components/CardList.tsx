@@ -1,5 +1,12 @@
-import React from "react";
-import { StyleSheet, View, ScrollView, TouchableHighlight } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableHighlight,
+  Animated,
+  Easing,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 import CustomText from "./CustomText";
@@ -18,6 +25,26 @@ interface CardListProps {
 }
 
 const CardList: React.FC<CardListProps> = (props) => {
+  /** @todo 何故かundefinedが型推論される */
+  const progressArray = props.items.map((item) => {
+    if (item.progress) {
+      return new Animated.Value(item.progress);
+    }
+  });
+
+  console.log(progressArray);
+
+  const [pressProgress] = useState(progressArray);
+  const DURATION_TIME = 200;
+
+  const pressInHandler = (index: number) => {
+    Animated.timing(pressProgress[index] as any, {
+      toValue: 100,
+      duration: DURATION_TIME,
+      easing: Easing.in(Easing.out(Easing.ease)),
+    }).start();
+  };
+
   return (
     <View>
       <View style={styles.title}>
@@ -36,46 +63,50 @@ const CardList: React.FC<CardListProps> = (props) => {
           }}
         >
           {props.items.map((item, index) => (
-            <View
+            <TouchableHighlight
+              onPressIn={() => pressInHandler(index)}
+              underlayColor="#fff"
               key={index}
               style={[
                 styles.listItem,
                 index === props.items.length - 1 && { marginBottom: 24 },
               ]}
             >
-              <View style={styles.deadline}>
-                <CustomText size={10} type="bold" color="#ccc">
-                  {item.today
-                    ? "今日まで"
-                    : item.doneTime
-                    ? `${item.doneTime}に完了`
-                    : `残り${item.deadline}日`}
-                </CustomText>
-              </View>
-              <TouchableHighlight
-                style={styles.button}
-                underlayColor="transparent"
-                onPress={props.openFn}
-              >
-                <View style={styles.bullet}>
-                  <View style={styles.bulletItem} />
-                  <View style={styles.bulletItem} />
-                  <View style={styles.bulletItem} />
+              <React.Fragment>
+                <View style={styles.deadline}>
+                  <CustomText size={10} type="bold" color="#ccc">
+                    {item.today
+                      ? "今日まで"
+                      : item.doneTime
+                      ? `${item.doneTime}に完了`
+                      : `残り${item.deadline}日`}
+                  </CustomText>
                 </View>
-              </TouchableHighlight>
-              <View>
-                <CustomText numberOfLines={2} ellipsizeMode="tail">
-                  {item.description}
-                </CustomText>
-              </View>
-              {item.progress && (
-                <View style={styles.progressWrapper}>
-                  <View
-                    style={[styles.progress, { width: `${item.progress}%` }]}
-                  />
+                <TouchableHighlight
+                  style={styles.button}
+                  underlayColor="transparent"
+                  onPress={props.openFn}
+                >
+                  <View style={styles.bullet}>
+                    <View style={styles.bulletItem} />
+                    <View style={styles.bulletItem} />
+                    <View style={styles.bulletItem} />
+                  </View>
+                </TouchableHighlight>
+                <View>
+                  <CustomText numberOfLines={2} ellipsizeMode="tail">
+                    {item.description}
+                  </CustomText>
                 </View>
-              )}
-            </View>
+                {item.progress && (
+                  <View style={styles.progressWrapper}>
+                    <View
+                      style={[styles.progress, { width: `${item.progress}%` }]}
+                    />
+                  </View>
+                )}
+              </React.Fragment>
+            </TouchableHighlight>
           ))}
         </ScrollView>
       </View>
