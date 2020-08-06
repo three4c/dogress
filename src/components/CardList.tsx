@@ -26,19 +26,20 @@ interface CardListProps {
 
 const CardList: React.FC<CardListProps> = (props) => {
   /** @todo 何故かundefinedが型推論される */
-  const progressArray = props.items.map((item) => {
-    if (item.progress) {
-      return new Animated.Value(item.progress);
-    }
-  });
-
-  console.log(progressArray);
+  const progressArray = props.items
+    .filter((item) => item.progress)
+    .map((item) => {
+      if (item.progress) {
+        return new Animated.Value(item.progress);
+      }
+    });
 
   const [pressProgress] = useState(progressArray);
   const DURATION_TIME = 200;
 
   const pressInHandler = (index: number) => {
-    Animated.timing(pressProgress[index] as any, {
+    /** onPress時に空配列を弾いているので大丈夫かと */
+    Animated.timing(pressProgress[index] as Animated.Value, {
       toValue: 100,
       duration: DURATION_TIME,
       easing: Easing.in(Easing.out(Easing.ease)),
@@ -64,7 +65,11 @@ const CardList: React.FC<CardListProps> = (props) => {
         >
           {props.items.map((item, index) => (
             <TouchableHighlight
-              onPressIn={() => pressInHandler(index)}
+              onPressIn={() =>
+                Object.keys(pressProgress).length !== 0
+                  ? pressInHandler(index)
+                  : undefined
+              }
               underlayColor="#fff"
               key={index}
               style={[
