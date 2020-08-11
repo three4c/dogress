@@ -105,8 +105,16 @@ const CardList: React.FC<CardListProps> = (props) => {
                 </View>
                 {item.progress && (
                   <View style={styles.progressWrapper}>
-                    <View
-                      style={[styles.progress, { width: `${item.progress}%` }]}
+                    <Animated.View
+                      style={[
+                        styles.progress,
+                        {
+                          width: pressProgress[index]?.interpolate({
+                            inputRange: [0, 100],
+                            outputRange: ["0%", "100%"],
+                          }),
+                        },
+                      ]}
                     />
                   </View>
                 )}
