@@ -12,8 +12,8 @@
     },
     {
       "deadline": 5,
-      "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
-      "progress": 60
+      "description": "progress 0",
+      "progress": 0
     },
     {
       "deadline": 0,
@@ -28,7 +28,7 @@
     {
       "deadline": 5,
       "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis nemo nostrum. Animi voluptates consequuntur explicabo id accusamus, officia veniam quisquam nostrum quis iste sed modi, reiciendis et eum corrupti!",
-      "progress": 60
+      "progress": 100
     },
     {
       "deadline": 0,

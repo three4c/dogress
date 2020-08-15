@@ -10,6 +10,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 
 import CustomText from "./CustomText";
+import { AnimatedValue } from "react-navigation";
 
 interface CardListProps {
   title: string;
@@ -26,24 +27,28 @@ interface CardListProps {
 
 const CardList: React.FC<CardListProps> = (props) => {
   /** @todo 何故かundefinedが型推論される */
-  const progressArray = props.items
-    .filter((item) => item.progress)
-    .map((item) => {
-      if (item.progress) {
-        return new Animated.Value(item.progress);
-      }
-    });
+  const progressArray = props.items.map((item) => {
+    if (item.progress !== undefined) {
+      return new Animated.Value(item.progress);
+    }
+  });
 
   const [pressProgress] = useState(progressArray);
-  const DURATION_TIME = 200;
+  const DURATION_TIME = 56;
 
   const pressInHandler = (index: number) => {
     /** onPress時に空配列を弾いているので大丈夫かと */
     Animated.timing(pressProgress[index] as Animated.Value, {
       toValue: 100,
-      duration: DURATION_TIME,
+      duration:
+        DURATION_TIME * (100 - (pressProgress[index] as AnimatedValue)._value),
       easing: Easing.in(Easing.out(Easing.ease)),
     }).start();
+  };
+
+  const pressOutHandler = (index: number) => {
+    const value = (pressProgress[index] as AnimatedValue)._value;
+    pressProgress[index]?.setValue(value);
   };
 
   return (
@@ -68,6 +73,11 @@ const CardList: React.FC<CardListProps> = (props) => {
               onPressIn={() =>
                 Object.keys(pressProgress).length !== 0
                   ? pressInHandler(index)
+                  : undefined
+              }
+              onPressOut={() =>
+                Object.keys(pressProgress).length !== 0
+                  ? pressOutHandler(index)
                   : undefined
               }
               underlayColor="#fff"
@@ -103,7 +113,7 @@ const CardList: React.FC<CardListProps> = (props) => {
                     {item.description}
                   </CustomText>
                 </View>
-                {item.progress && (
+                {pressProgress[index] && (
                   <View style={styles.progressWrapper}>
                     <Animated.View
                       style={[

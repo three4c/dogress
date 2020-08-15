@@ -17,7 +17,9 @@ const MainScreen = () => {
   const [isShow, setShow] = useState(false);
   const remaining = mockResponse.items.filter((item) => item.today);
   const done = mockResponse.items.filter((item) => item.doneTime);
-  const progress = mockResponse.items.filter((item) => item.progress);
+  const progress = mockResponse.items.filter(
+    (item) => item.progress !== undefined
+  );
 
   return (
     <View style={styles.container}>
