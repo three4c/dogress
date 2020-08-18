@@ -75,7 +75,6 @@ const CardList: React.FC<CardListProps> = (props) => {
         >
           {props.items.map((item, index) => (
             <TouchableHighlight
-              // onPressIn={() => pressInHandler(index)}
               onPressOut={() => pressOutHandler(index)}
               onLongPress={() => pressInHandler(index)}
               underlayColor="#fff"
