@@ -37,7 +37,10 @@ const CardList: React.FC<CardListProps> = (props) => {
   const DURATION_TIME = 56;
 
   const pressInHandler = (index: number) => {
-    /** onPress時に空配列を弾いているので大丈夫かと */
+    if (!pressProgress[index]) {
+      return;
+    }
+
     Animated.timing(pressProgress[index] as Animated.Value, {
       toValue: 100,
       duration:
@@ -47,8 +50,10 @@ const CardList: React.FC<CardListProps> = (props) => {
   };
 
   const pressOutHandler = (index: number) => {
-    const value = (pressProgress[index] as AnimatedValue)._value;
-    pressProgress[index]?.setValue(value);
+    if (pressProgress[index]) {
+      const value = (pressProgress[index] as AnimatedValue)._value;
+      pressProgress[index]?.setValue(value);
+    }
   };
 
   return (
@@ -70,16 +75,9 @@ const CardList: React.FC<CardListProps> = (props) => {
         >
           {props.items.map((item, index) => (
             <TouchableHighlight
-              onPressIn={() =>
-                Object.keys(pressProgress).length !== 0
-                  ? pressInHandler(index)
-                  : undefined
-              }
-              onPressOut={() =>
-                Object.keys(pressProgress).length !== 0
-                  ? pressOutHandler(index)
-                  : undefined
-              }
+              // onPressIn={() => pressInHandler(index)}
+              onPressOut={() => pressOutHandler(index)}
+              onLongPress={() => pressInHandler(index)}
               underlayColor="#fff"
               key={index}
               style={[
