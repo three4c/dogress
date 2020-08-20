@@ -2,14 +2,19 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 const Title: React.FC = (props) => (
-  <View style={styles.title}>{props.children}</View>
+  <View style={styles.container}>
+    {React.Children.map(props.children, (child, index) => (
+      <View key={index}>{child}</View>
+    ))}
+  </View>
 );
 
 const styles = StyleSheet.create({
-  title: {
+  container: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
     marginTop: 72,
-    marginLeft: 24,
-    textAlign: "left",
     width: "100%",
   },
 });
