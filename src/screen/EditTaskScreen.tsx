@@ -5,14 +5,22 @@ import SubmitButton from "../components/SubmitButton";
 import CustomText from "../components/CustomText";
 import Title from "../components/Title";
 
-const EditTaskScreen = () => {
+import { NavigationProps } from "../types";
+
+interface EditTaskScreenProps extends NavigationProps {}
+
+const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
+  const handleCancel = () => {
+    props.navigation.navigate("Main");
+  };
+
   return (
     <View style={styles.container}>
       <Title>
         <CustomText color="#fff" size={24}>
           タスクを編集
         </CustomText>
-        <TouchableHighlight onPress={() => console.log("hoge")}>
+        <TouchableHighlight onPress={handleCancel}>
           <CustomText color="#fff" size={14}>
             キャンセル
           </CustomText>

@@ -9,11 +9,11 @@ import EditTaskScreen from "./src/screen/EditTaskScreen";
 
 const App = createStackNavigator(
   {
-    EditTask: { screen: EditTaskScreen },
     Signup: { screen: SignupScreen },
     Login: { screen: LoginScreen },
     Main: { screen: MainScreen },
     AddTask: { screen: AddTaskScreen },
+    EditTask: { screen: EditTaskScreen },
   },
   {
     headerMode: "none",

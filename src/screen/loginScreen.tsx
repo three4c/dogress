@@ -7,7 +7,15 @@ import SubmitButton from "../components/SubmitButton";
 import SNSButton from "../components/SNSButton";
 import Title from "../components/Title";
 
-const LoginScreen = () => {
+import { NavigationProps } from "../types";
+
+interface LoginScreenProps extends NavigationProps {}
+
+const LoginScreen: React.FC<LoginScreenProps> = (props) => {
+  const handleSubmit = () => {
+    props.navigation.navigate("Main");
+  };
+
   return (
     <View style={styles.container}>
       <Title>
@@ -31,7 +39,7 @@ const LoginScreen = () => {
           onChangeText={() => console.log("password")}
           style={styles.inputBoxPassword}
         />
-        <SubmitButton onPress={() => console.log("Signup")}>
+        <SubmitButton onPress={handleSubmit}>
           <CustomText color="#fff">ログイン</CustomText>
         </SubmitButton>
         <View style={styles.or}>

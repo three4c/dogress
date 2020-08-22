@@ -7,7 +7,15 @@ import SubmitButton from "../components/SubmitButton";
 import SNSButton from "../components/SNSButton";
 import Title from "../components/Title";
 
-const SignupScreen = () => {
+import { NavigationProps } from "../types";
+
+interface SignupScreenProps extends NavigationProps {}
+
+const SignupScreen: React.FC<SignupScreenProps> = (props) => {
+  const handleSubmit = () => {
+    props.navigation.navigate("Main");
+  };
+
   return (
     <View style={styles.container}>
       <Title>
@@ -31,7 +39,7 @@ const SignupScreen = () => {
           onChangeText={() => console.log("password")}
           style={styles.inputBoxPassword}
         />
-        <SubmitButton onPress={() => console.log("Signup")}>
+        <SubmitButton onPress={handleSubmit}>
           <CustomText color="#fff">アカウントを作成する</CustomText>
         </SubmitButton>
         <View style={styles.or}>
@@ -55,8 +63,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4665ff",
     flex: 1,
     alignItems: "center",
-    paddingLeft: 24,
-    paddingRight: 24,
+    paddingHorizontal: 24,
   },
   title: {
     position: "absolute",

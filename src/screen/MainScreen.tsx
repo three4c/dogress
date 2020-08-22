@@ -9,10 +9,14 @@ import CustomText from "../components/CustomText";
 import CircleButton from "../components/CircleButton";
 import Title from "../components/Title";
 
+import { NavigationProps } from "../types";
+
 /** @todo 後で消す */
 import mockResponse from "../data/mock-response.json";
 
-const MainScreen = () => {
+interface MainScreenProps extends NavigationProps {}
+
+const MainScreen: React.FC<MainScreenProps> = (props) => {
   const [isSwipeUp, setSwipeUp] = useState(false);
   const [isShow, setShow] = useState(false);
   const remaining = mockResponse.items.filter((item) => item.today);
@@ -20,6 +24,10 @@ const MainScreen = () => {
   const progress = mockResponse.items.filter(
     (item) => item.progress !== undefined
   );
+
+  const handleAdd = () => {
+    props.navigation.navigate("AddTask");
+  };
 
   return (
     <View style={styles.container}>
@@ -55,7 +63,7 @@ const MainScreen = () => {
           items={progress}
         />
       </BottomSheetSwiper>
-      <CircleButton openFn={() => console.log("hoge")} />
+      <CircleButton openFn={handleAdd} />
       <BottomSheet isShow={isShow} closeFn={() => setShow(false)}>
         <View style={styles.menu}>
           <CustomText type="bold" color="#e0245e">
@@ -81,6 +89,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#4665ff",
+    paddingHorizontal: 24,
   },
   title: {
     marginBottom: 48,
