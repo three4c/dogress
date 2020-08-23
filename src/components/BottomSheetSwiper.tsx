@@ -13,7 +13,6 @@ import {
   PanGestureHandlerStateChangeEvent,
   State,
 } from "react-native-gesture-handler";
-import { AnimatedValue } from "react-navigation";
 
 const { width } = Dimensions.get("window");
 
@@ -95,8 +94,8 @@ const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
       setPrevPanY(event.nativeEvent.translationY);
 
       /** @todo _valueは非推奨なので後ほど対応 */
-      setPanStartPositionX((panPositionX as AnimatedValue)._value);
-      setPanStartPositionY((panPositionY as AnimatedValue)._value);
+      setPanStartPositionX((panPositionX as any)._value);
+      setPanStartPositionY((panPositionY as any)._value);
     } else if (event.nativeEvent.state === State.END) {
       /** 閾値を超えるとスワイプする */
       const PEAK_X = Math.abs(event.nativeEvent.translationX - prevPanX) > 24;
@@ -106,11 +105,11 @@ const BottomSheetSwiper: React.FC<BottomSheetSwiperProps> = (props) => {
         slideTo(
           event.nativeEvent.translationX < prevPanX
             ? PEAK_X
-              ? Math.ceil((panPositionX as AnimatedValue)._value)
-              : Math.floor((panPositionX as AnimatedValue)._value)
+              ? Math.ceil((panPositionX as any)._value)
+              : Math.floor((panPositionX as any)._value)
             : PEAK_X
-            ? Math.floor((panPositionX as AnimatedValue)._value)
-            : Math.ceil((panPositionX as AnimatedValue)._value)
+            ? Math.floor((panPositionX as any)._value)
+            : Math.ceil((panPositionX as any)._value)
         );
       }
 

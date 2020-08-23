@@ -10,8 +10,8 @@ import { NavigationProps } from "../types";
 interface EditTaskScreenProps extends NavigationProps {}
 
 const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
-  const handleCancel = () => {
-    props.navigation.navigate("Main");
+  const navigationHandler = (to: string) => {
+    props.navigation.navigate(to);
   };
 
   return (
@@ -20,7 +20,7 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
         <CustomText color="#fff" size={24}>
           タスクを編集
         </CustomText>
-        <TouchableHighlight onPress={handleCancel}>
+        <TouchableHighlight onPress={() => navigationHandler("Main")}>
           <CustomText color="#fff" size={14}>
             キャンセル
           </CustomText>

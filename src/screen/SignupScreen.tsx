@@ -12,8 +12,8 @@ import { NavigationProps } from "../types";
 interface SignupScreenProps extends NavigationProps {}
 
 const SignupScreen: React.FC<SignupScreenProps> = (props) => {
-  const handleSubmit = () => {
-    props.navigation.navigate("Main");
+  const navigationHandler = (to: string) => {
+    props.navigation.navigate(to);
   };
 
   return (
@@ -39,7 +39,7 @@ const SignupScreen: React.FC<SignupScreenProps> = (props) => {
           onChangeText={() => console.log("password")}
           style={styles.inputBoxPassword}
         />
-        <SubmitButton onPress={handleSubmit}>
+        <SubmitButton onPress={() => navigationHandler("Main")}>
           <CustomText color="#fff">アカウントを作成する</CustomText>
         </SubmitButton>
         <View style={styles.or}>

@@ -7,8 +7,6 @@ import {
   State,
 } from "react-native-gesture-handler";
 
-import { AnimatedValue } from "react-navigation";
-
 interface BottomSheetProps {
   isShow: boolean;
   closeFn: () => void;
@@ -58,7 +56,7 @@ const BottomSheet: React.FC<BottomSheetProps> = (props) => {
   ) => {
     if (event.nativeEvent.state === State.BEGAN) {
       setPrevPanY(event.nativeEvent.translationY);
-      setPanStartPositionY((panPositionY as AnimatedValue)._value);
+      setPanStartPositionY((panPositionY as any)._value);
     } else if (event.nativeEvent.state === State.END) {
       const PEAK_Y = Math.abs(event.nativeEvent.translationY - prevPanY) > 24;
 

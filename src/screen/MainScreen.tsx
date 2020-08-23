@@ -25,8 +25,9 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
     (item) => item.progress !== undefined
   );
 
-  const handleAdd = () => {
-    props.navigation.navigate("AddTask");
+  const navigationHandler = (to: string) => {
+    props.navigation.navigate(to);
+    setShow(false);
   };
 
   return (
@@ -63,16 +64,20 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
           items={progress}
         />
       </BottomSheetSwiper>
-      <CircleButton openFn={handleAdd} />
+      <CircleButton openFn={() => navigationHandler("AddTask")} />
       <BottomSheet isShow={isShow} closeFn={() => setShow(false)}>
         <View style={styles.menu}>
           <CustomText type="bold" color="#e0245e">
             削除
           </CustomText>
         </View>
-        <View style={styles.menu}>
+        <TouchableHighlight
+          style={styles.menu}
+          underlayColor="transparent"
+          onPress={() => navigationHandler("EditTask")}
+        >
           <CustomText type="bold">タスクを編集する</CustomText>
-        </View>
+        </TouchableHighlight>
         <TouchableHighlight
           style={styles.menu}
           underlayColor="transparent"
