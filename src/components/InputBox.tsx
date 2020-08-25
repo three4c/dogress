@@ -8,11 +8,12 @@ import {
 } from "react-native";
 
 interface InputBoxProps {
+  value: string;
+  placeholder: string;
+  onChangeText: (text: string) => void;
   autoCapitalize?: "none";
   autoCorrect?: boolean;
   secureTextEntry?: boolean;
-  placeholder: string;
-  onChangeText: (text: string) => void;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -25,6 +26,7 @@ const InputBox: React.FC<InputBoxProps> = (props) => {
         secureTextEntry={props.secureTextEntry}
         placeholder={props.placeholder}
         placeholderTextColor="#6b84ff"
+        value={props.value}
         onChangeText={(text) => props.onChangeText(text)}
         selectionColor="#fff"
         style={styles.textInput}

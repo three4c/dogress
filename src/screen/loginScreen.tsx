@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Image } from "react-native";
 
 import CustomText from "../components/CustomText";
@@ -12,6 +12,9 @@ import { NavigationProps } from "../types";
 interface LoginScreenProps extends NavigationProps {}
 
 const LoginScreen: React.FC<LoginScreenProps> = (props) => {
+  const [email, setemail] = useState("");
+  const [password, setPassword] = useState("");
+
   const navigationHandler = (to: string) => {
     props.navigation.navigate(to);
   };
@@ -27,8 +30,9 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
         <InputBox
           autoCapitalize="none"
           autoCorrect
-          placeholder="ID"
-          onChangeText={() => console.log("id")}
+          placeholder="メールアドレス"
+          onChangeText={(text) => setemail(text)}
+          value={email}
           style={styles.inputBoxId}
         />
         <InputBox
@@ -36,7 +40,8 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
           autoCorrect
           secureTextEntry
           placeholder="パスワード"
-          onChangeText={() => console.log("password")}
+          onChangeText={(text) => setPassword(text)}
+          value={password}
           style={styles.inputBoxPassword}
         />
         <SubmitButton onPress={() => navigationHandler("Main")}>

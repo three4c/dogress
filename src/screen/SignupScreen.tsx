@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Image } from "react-native";
+import { StackActions } from "@react-navigation/native";
+
+import firebase from "firebase";
 
 import CustomText from "../components/CustomText";
 import InputBox from "../components/InputBox";
@@ -12,8 +15,22 @@ import { NavigationProps } from "../types";
 interface SignupScreenProps extends NavigationProps {}
 
 const SignupScreen: React.FC<SignupScreenProps> = (props) => {
+  const [email, setemail] = useState("");
+  const [password, setPassword] = useState("");
+
   const navigationHandler = (to: string) => {
     props.navigation.navigate(to);
+  };
+
+  const submitHandler = () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        const popAction = StackActions.pop(0);
+        props.navigation.dispatch(popAction);
+      })
+      .catch(() => {});
   };
 
   return (
@@ -27,8 +44,9 @@ const SignupScreen: React.FC<SignupScreenProps> = (props) => {
         <InputBox
           autoCapitalize="none"
           autoCorrect
-          placeholder="ID"
-          onChangeText={() => console.log("id")}
+          placeholder="メールアドレス"
+          onChangeText={(text) => setemail(text)}
+          value={email}
           style={styles.inputBoxId}
         />
         <InputBox
@@ -36,7 +54,8 @@ const SignupScreen: React.FC<SignupScreenProps> = (props) => {
           autoCorrect
           secureTextEntry
           placeholder="パスワード"
-          onChangeText={() => console.log("password")}
+          onChangeText={(text) => setPassword(text)}
+          value={password}
           style={styles.inputBoxPassword}
         />
         <SubmitButton onPress={() => navigationHandler("Main")}>

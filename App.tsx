@@ -35,13 +35,13 @@ const defaultOptions = {
 const MainStackScreen = () => (
   <MainStack.Navigator>
     <MainStack.Screen
-      name="Login"
-      component={LoginScreen}
+      name="Signup"
+      component={SignupScreen}
       options={defaultOptions}
     />
     <MainStack.Screen
-      name="Signup"
-      component={SignupScreen}
+      name="Login"
+      component={LoginScreen}
       options={defaultOptions}
     />
     <MainStack.Screen
