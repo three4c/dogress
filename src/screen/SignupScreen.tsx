@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Image } from "react-native";
-import { StackActions } from "@react-navigation/native";
-
+import { CommonActions } from "@react-navigation/native";
 import firebase from "firebase";
 
 import CustomText from "../components/CustomText";
@@ -18,19 +17,19 @@ const SignupScreen: React.FC<SignupScreenProps> = (props) => {
   const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigationHandler = (to: string) => {
-    props.navigation.navigate(to);
-  };
-
   const submitHandler = () => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
-        const popAction = StackActions.pop(0);
-        props.navigation.dispatch(popAction);
+        props.navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Main" }],
+          })
+        );
       })
-      .catch(() => {});
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -58,7 +57,7 @@ const SignupScreen: React.FC<SignupScreenProps> = (props) => {
           value={password}
           style={styles.inputBoxPassword}
         />
-        <SubmitButton onPress={() => navigationHandler("Main")}>
+        <SubmitButton onPress={submitHandler}>
           <CustomText color="#fff">アカウントを作成する</CustomText>
         </SubmitButton>
         <View style={styles.or}>

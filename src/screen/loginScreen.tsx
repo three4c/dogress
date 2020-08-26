@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Image } from "react-native";
+import { CommonActions } from "@react-navigation/native";
+import firebase from "firebase";
 
 import CustomText from "../components/CustomText";
 import InputBox from "../components/InputBox";
@@ -8,16 +10,35 @@ import SNSButton from "../components/SNSButton";
 import Title from "../components/Title";
 
 import { NavigationProps } from "../types";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 interface LoginScreenProps extends NavigationProps {}
 
 const LoginScreen: React.FC<LoginScreenProps> = (props) => {
   const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
 
   const navigationHandler = (to: string) => {
     props.navigation.navigate(to);
   };
+
+  const submitHandler = () => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        props.navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Main" }],
+          })
+        );
+      })
+      .catch(() => setError(true));
+  };
+
+  console.log("debug", error);
 
   return (
     <View style={styles.container}>
@@ -44,7 +65,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
           value={password}
           style={styles.inputBoxPassword}
         />
-        <SubmitButton onPress={() => navigationHandler("Main")}>
+        <SubmitButton onPress={submitHandler}>
           <CustomText color="#fff">ログイン</CustomText>
         </SubmitButton>
         <View style={styles.or}>
@@ -57,6 +78,15 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
             style={{ width: 24, height: 20 }}
           />
         </SNSButton>
+        <TouchableHighlight
+          style={styles.account}
+          underlayColor="transparent"
+          onPress={() => navigationHandler("Signup")}
+        >
+          <CustomText color="#fff" size={14} type="bold">
+            アカウントを作成する
+          </CustomText>
+        </TouchableHighlight>
       </View>
     </View>
   );
@@ -85,6 +115,9 @@ const styles = StyleSheet.create({
   or: {
     marginTop: 32,
     marginBottom: 32,
+  },
+  account: {
+    marginTop: 64,
   },
 });
 
