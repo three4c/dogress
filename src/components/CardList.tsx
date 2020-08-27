@@ -10,7 +10,6 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 
 import CustomText from "./CustomText";
-import { AnimatedValue } from "react-navigation";
 
 interface CardListProps {
   title: string;
@@ -43,15 +42,14 @@ const CardList: React.FC<CardListProps> = (props) => {
 
     Animated.timing(pressProgress[index] as Animated.Value, {
       toValue: 100,
-      duration:
-        DURATION_TIME * (100 - (pressProgress[index] as AnimatedValue)._value),
+      duration: DURATION_TIME * (100 - (pressProgress[index] as any)._value),
       easing: Easing.in(Easing.out(Easing.ease)),
     }).start();
   };
 
   const pressOutHandler = (index: number) => {
     if (pressProgress[index]) {
-      const value = (pressProgress[index] as AnimatedValue)._value;
+      const value = (pressProgress[index] as any)._value;
       pressProgress[index]?.setValue(value);
     }
   };

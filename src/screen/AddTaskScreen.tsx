@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, TouchableHighlight, TextInput } from "react-native";
+import firebase from "firebase";
 
 import SubmitButton from "../components/SubmitButton";
 import CustomText from "../components/CustomText";
@@ -10,8 +11,29 @@ import { NavigationProps } from "../types";
 interface AddTaskScreenProps extends NavigationProps {}
 
 const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
+  const [deadline, setDeadline] = useState(0);
+  const [description, setDescription] = useState("");
+
   const navigationHandler = (to: string) => {
     props.navigation.navigate(to);
+  };
+
+  const submitHandler = () => {
+    const db = firebase.firestore();
+    const { currentUser } = firebase.auth();
+
+    if (currentUser) {
+      db.collection(`users/${currentUser.uid}/todos`)
+        .add({
+          deadline: deadline,
+          description: description,
+          createdOn: new Date(),
+        })
+        .then(() => {
+          props.navigation.goBack();
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   return (
@@ -34,8 +56,12 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
           日数
         </CustomText>
         <TextInput
+          autoCapitalize="none"
+          autoCorrect
           placeholder="タスクを完了するまでの日数を入力しましょう"
           placeholderTextColor="#6b84ff"
+          onChangeText={(text) => setDeadline(Number(text))}
+          selectionColor="#fff"
           style={styles.textInput}
         />
       </View>
@@ -48,12 +74,13 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
           autoCorrect
           placeholder="これから行うタスクの内容を入力しましょう"
           placeholderTextColor="#6b84ff"
+          onChangeText={(text) => setDescription(text)}
           selectionColor="#fff"
           style={styles.textInput}
         />
       </View>
       <View style={styles.submitButton}>
-        <SubmitButton onPress={() => console.log("AddTask")}>
+        <SubmitButton onPress={submitHandler}>
           <CustomText color="#fff">追加する</CustomText>
         </SubmitButton>
       </View>
@@ -72,6 +99,7 @@ const styles = StyleSheet.create({
     marginTop: 48,
   },
   textInput: {
+    color: "#fff",
     marginTop: 8,
     fontSize: 16,
     fontWeight: "700",

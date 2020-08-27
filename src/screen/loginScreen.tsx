@@ -15,8 +15,8 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 interface LoginScreenProps extends NavigationProps {}
 
 const LoginScreen: React.FC<LoginScreenProps> = (props) => {
-  const [email, setemail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setemail] = useState("user1@sample.com");
+  const [password, setPassword] = useState("user1user1");
   const [error, setError] = useState(false);
 
   const navigationHandler = (to: string) => {
