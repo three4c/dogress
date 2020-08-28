@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View, TouchableHighlight, TextInput } from "react-native";
-import firebase from "firebase";
+import * as SQLite from "expo-sqlite";
 
 import SubmitButton from "../components/SubmitButton";
 import CustomText from "../components/CustomText";
@@ -19,21 +19,23 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
   };
 
   const submitHandler = () => {
-    const db = firebase.firestore();
-    const { currentUser } = firebase.auth();
+    const db = SQLite.openDatabase("db.db");
 
-    if (currentUser) {
-      db.collection(`users/${currentUser.uid}/todos`)
-        .add({
-          deadline: deadline,
-          description: description,
-          createdOn: new Date(),
-        })
-        .then(() => {
-          props.navigation.goBack();
-        })
-        .catch((error) => console.log(error));
-    }
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          `insert into items (deadline, description, createdOn) values (?, ?, ?);`,
+          [deadline, description, String(new Date())]
+        );
+      },
+      () => {
+        console.log("fail_insert");
+      },
+      () => {
+        console.log("success_insert");
+        props.navigation.goBack();
+      }
+    );
   };
 
   return (

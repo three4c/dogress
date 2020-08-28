@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, TouchableHighlight } from "react-native";
+import * as SQLite from "expo-sqlite";
 
 import BottomSheet from "../components/BottomSheet";
 import BottomSheetSwiper from "../components/BottomSheetSwiper";
@@ -14,11 +15,18 @@ import { NavigationProps } from "../types";
 /** @todo 後で消す */
 import mockResponse from "../data/mock-response.json";
 
+interface insertDatabaseType {
+  deadline: number;
+  description: string;
+  createdOn: string;
+}
+
 interface MainScreenProps extends NavigationProps {}
 
 const MainScreen: React.FC<MainScreenProps> = (props) => {
   const [isSwipeUp, setSwipeUp] = useState(false);
   const [isShow, setShow] = useState(false);
+  const [todos, setTodos] = useState<insertDatabaseType[]>([]);
   const remaining = mockResponse.items.filter((item) => item.today);
   const done = mockResponse.items.filter((item) => item.doneTime);
   const progress = mockResponse.items.filter(
@@ -29,6 +37,48 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
     props.navigation.navigate(to);
     setShow(false);
   };
+
+  const db = SQLite.openDatabase("db.db");
+
+  useEffect(() => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          `create table if not exists items (id integer primary key not null, deadline int, description text, createdOn text);`,
+          []
+        );
+      },
+      () => {
+        console.log("fail_create");
+      },
+      () => {
+        console.log("success_create");
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    const results: insertDatabaseType[] = [];
+    db.transaction(
+      (tx) => {
+        tx.executeSql(`select * from items`, [], (_, items) => {
+          for (let i = 0; i < items.rows.length; i++) {
+            results.push(items.rows.item(i));
+          }
+        });
+      },
+      () => {
+        console.log("fail_select");
+      },
+      () => {
+        console.log("success_select");
+        setTodos(results);
+      }
+    );
+  }, []);
+
+  console.log("sqlite_database", todos);
+  console.log();
 
   return (
     <View style={styles.container}>
