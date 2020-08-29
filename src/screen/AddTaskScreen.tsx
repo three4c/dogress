@@ -18,18 +18,18 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
     props.navigation.navigate(to);
   };
 
-  const submitHandler = () => {
-    const db = SQLite.openDatabase("db.db");
+  const db = SQLite.openDatabase("db.db");
 
+  const insertHandler = () => {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          `insert into items (deadline, description, createdOn) values (?, ?, ?);`,
-          [deadline, description, String(new Date())]
+          "insert into items (deadline, description, createdOn, doneTime, progress) values (?, ?, ?, ?, ?);",
+          [deadline, description, String(new Date()), "", 0]
         );
       },
-      () => {
-        console.log("fail_insert");
+      (error) => {
+        console.log("fail_insert", error);
       },
       () => {
         console.log("success_insert");
@@ -82,7 +82,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
         />
       </View>
       <View style={styles.submitButton}>
-        <SubmitButton onPress={submitHandler}>
+        <SubmitButton onPress={insertHandler}>
           <CustomText color="#fff">追加する</CustomText>
         </SubmitButton>
       </View>

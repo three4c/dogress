@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -18,29 +18,22 @@ interface CardListProps {
   items: {
     deadline: number;
     description: string;
-    today?: boolean;
-    doneTime?: string;
-    progress?: number;
+    today: boolean;
+    doneTime: string;
+    progress: number;
   }[];
 }
 
 const CardList: React.FC<CardListProps> = (props) => {
-  /** @todo 何故かundefinedが型推論される */
-  const progressArray = props.items.map((item) => {
-    if (item.progress !== undefined) {
-      return new Animated.Value(item.progress);
-    }
-  });
+  const progressArray = props.items.map(
+    (item) => new Animated.Value(item.progress)
+  );
 
-  const [pressProgress] = useState(progressArray);
+  const [pressProgress, setPressProgress] = useState<Animated.Value[]>([]);
   const DURATION_TIME = 56;
 
   const pressInHandler = (index: number) => {
-    if (!pressProgress[index]) {
-      return;
-    }
-
-    Animated.timing(pressProgress[index] as Animated.Value, {
+    Animated.timing(pressProgress[index], {
       toValue: 100,
       duration: DURATION_TIME * (100 - (pressProgress[index] as any)._value),
       easing: Easing.in(Easing.out(Easing.ease)),
@@ -48,11 +41,13 @@ const CardList: React.FC<CardListProps> = (props) => {
   };
 
   const pressOutHandler = (index: number) => {
-    if (pressProgress[index]) {
-      const value = (pressProgress[index] as any)._value;
-      pressProgress[index]?.setValue(value);
-    }
+    const value = (pressProgress[index] as any)._value;
+    pressProgress[index].setValue(value);
   };
+
+  useEffect(() => {
+    setPressProgress(progressArray);
+  }, [props.items]);
 
   return (
     <View>
@@ -73,8 +68,16 @@ const CardList: React.FC<CardListProps> = (props) => {
         >
           {props.items.map((item, index) => (
             <TouchableHighlight
-              onPressOut={() => pressOutHandler(index)}
-              onLongPress={() => pressInHandler(index)}
+              onLongPress={() =>
+                !props.items[index].today && !props.items[index].doneTime
+                  ? pressInHandler(index)
+                  : undefined
+              }
+              onPressOut={() =>
+                !props.items[index].today && !props.items[index].doneTime
+                  ? pressOutHandler(index)
+                  : undefined
+              }
               underlayColor="#fff"
               key={index}
               style={[
@@ -108,21 +111,23 @@ const CardList: React.FC<CardListProps> = (props) => {
                     {item.description}
                   </CustomText>
                 </View>
-                {pressProgress[index] && (
-                  <View style={styles.progressWrapper}>
-                    <Animated.View
-                      style={[
-                        styles.progress,
-                        {
-                          width: pressProgress[index]?.interpolate({
-                            inputRange: [0, 100],
-                            outputRange: ["0%", "100%"],
-                          }),
-                        },
-                      ]}
-                    />
-                  </View>
-                )}
+                {pressProgress[index] &&
+                  !props.items[index].today &&
+                  !props.items[index].doneTime && (
+                    <View style={styles.progressWrapper}>
+                      <Animated.View
+                        style={[
+                          styles.progress,
+                          {
+                            width: pressProgress[index].interpolate({
+                              inputRange: [0, 100],
+                              outputRange: ["0%", "100%"],
+                            }),
+                          },
+                        ]}
+                      />
+                    </View>
+                  )}
               </React.Fragment>
             </TouchableHighlight>
           ))}
