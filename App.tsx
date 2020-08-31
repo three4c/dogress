@@ -1,4 +1,7 @@
 import React from "react";
+import { Provider } from "react-redux";
+import { store } from "./src/store";
+
 import LoginScreen from "./src/screen/LoginScreen";
 import SignupScreen from "./src/screen/SignupScreen";
 import MainScreen from "./src/screen/MainScreen";
@@ -36,25 +39,27 @@ const MainStackScreen = () => (
 );
 
 const App = () => (
-  <NavigationContainer>
-    <RootStack.Navigator mode="modal">
-      <RootStack.Screen
-        name="Main"
-        component={MainStackScreen}
-        options={defaultOptions}
-      />
-      <RootStack.Screen
-        name="AddTask"
-        component={AddTaskScreen}
-        options={defaultOptions}
-      />
-      <RootStack.Screen
-        name="EditTask"
-        component={EditTaskScreen}
-        options={defaultOptions}
-      />
-    </RootStack.Navigator>
-  </NavigationContainer>
+  <Provider store={store}>
+    <NavigationContainer>
+      <RootStack.Navigator mode="modal">
+        <RootStack.Screen
+          name="Main"
+          component={MainStackScreen}
+          options={defaultOptions}
+        />
+        <RootStack.Screen
+          name="AddTask"
+          component={AddTaskScreen}
+          options={defaultOptions}
+        />
+        <RootStack.Screen
+          name="EditTask"
+          component={EditTaskScreen}
+          options={defaultOptions}
+        />
+      </RootStack.Navigator>
+    </NavigationContainer>
+  </Provider>
 );
 
 export default App;

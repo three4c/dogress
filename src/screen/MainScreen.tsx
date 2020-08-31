@@ -10,6 +10,9 @@ import CustomText from "../components/CustomText";
 import CircleButton from "../components/CircleButton";
 import Title from "../components/Title";
 
+import { useDispatch, useSelector } from "react-redux";
+import { TodoState, getTodo } from "../store";
+
 import { NavigationProps } from "../types";
 
 interface InsertDatabaseType {
@@ -35,6 +38,8 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
   const [isSwipeUp, setSwipeUp] = useState(false);
   const [isShow, setShow] = useState(false);
   const [todos, setTodos] = useState<FilterDatabaseType[]>([]);
+  const dispath = useDispatch();
+  const hoge = useSelector<any, TodoState["todos"]>((state) => state.todos);
   const remaining = todos.filter((item) => item.today);
   const done = todos.filter((item) => item.doneTime);
   const progress = todos.filter((item) => !item.today && !item.doneTime);
@@ -100,6 +105,7 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
           );
 
           return {
+            id: item.id,
             deadline: item.deadline,
             description: item.description,
             today: item.deadline === diffDay,
@@ -107,10 +113,13 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
             progress: item.progress,
           };
         });
+        dispath(getTodo({ todos: convertResults }));
         setTodos(convertResults);
       }
     );
   }, []);
+
+  console.log("aaaaaaaa", hoge);
 
   return (
     <View style={styles.container}>
