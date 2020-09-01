@@ -1,8 +1,8 @@
 import { createStore } from "redux";
 
 export enum TodoActionType {
-  ADD_TODO_ACTION = "ADD_TODO_ACTION",
   GET_TODO_ACTION = "GET_TODO_ACTION",
+  ADD_TODO_ACTION = "ADD_TODO_ACTION",
 }
 
 export interface TodoState {
@@ -37,10 +37,9 @@ export const todoReducer = (
 ): TodoState => {
   switch (action.type) {
     case TodoActionType.GET_TODO_ACTION:
-      console.log(state);
       return {
         ...state,
-        todos: action.todos,
+        ...action.todos,
       };
     default:
       return state;

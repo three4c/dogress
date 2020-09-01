@@ -24,25 +24,19 @@ interface InsertDatabaseType {
   progress: number;
 }
 
-interface FilterDatabaseType {
-  deadline: number;
-  description: string;
-  today: boolean;
-  doneTime: string;
-  progress: number;
-}
-
 interface MainScreenProps extends NavigationProps {}
 
 const MainScreen: React.FC<MainScreenProps> = (props) => {
   const [isSwipeUp, setSwipeUp] = useState(false);
   const [isShow, setShow] = useState(false);
-  const [todos, setTodos] = useState<FilterDatabaseType[]>([]);
+
+  /** Global State */
+  const store = useSelector<TodoState, TodoState>((state) => state);
   const dispath = useDispatch();
-  const hoge = useSelector<any, TodoState["todos"]>((state) => state.todos);
-  const remaining = todos.filter((item) => item.today);
-  const done = todos.filter((item) => item.doneTime);
-  const progress = todos.filter((item) => !item.today && !item.doneTime);
+
+  const remaining = store.todos.filter((item) => item.today);
+  const done = store.todos.filter((item) => item.doneTime);
+  const progress = store.todos.filter((item) => !item.today && !item.doneTime);
 
   const navigationHandler = (to: string) => {
     props.navigation.navigate(to);
@@ -104,22 +98,21 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
               (1000 * 60 * 60 * 24)
           );
 
+          console.log(item.deadline, diffDay);
+
           return {
             id: item.id,
-            deadline: item.deadline,
+            deadline: item.deadline - diffDay,
             description: item.description,
-            today: item.deadline === diffDay,
+            today: item.deadline <= diffDay,
             doneTime: item.doneTime,
             progress: item.progress,
           };
         });
         dispath(getTodo({ todos: convertResults }));
-        setTodos(convertResults);
       }
     );
   }, []);
-
-  console.log("aaaaaaaa", hoge);
 
   return (
     <View style={styles.container}>
