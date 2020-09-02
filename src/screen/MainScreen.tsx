@@ -109,7 +109,7 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
             progress: item.progress,
           };
         });
-        dispath(getTodo({ todos: convertResults }));
+        dispath(getTodo(convertResults));
       }
     );
   }, []);

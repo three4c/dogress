@@ -14,21 +14,42 @@ export interface TodoState {
     doneTime: string;
     progress: number;
   }[];
+  todo: {
+    deadline: number;
+    description: string;
+    createdOn: string;
+    doneTime: string;
+    progress: number;
+  };
 }
 
 export interface TodoAction extends TodoState {
   type: TodoActionType;
 }
 
-export const getTodo = (todos: TodoState) => {
+export const getTodo = (todos: TodoState["todos"]) => {
   return {
     type: TodoActionType.GET_TODO_ACTION,
     todos,
   };
 };
 
+export const addTodo = (todo: TodoState["todo"]) => {
+  return {
+    type: TodoActionType.ADD_TODO_ACTION,
+    todo,
+  };
+};
+
 const initialState: TodoState = {
   todos: [],
+  todo: {
+    deadline: 0,
+    description: "",
+    createdOn: "",
+    doneTime: "",
+    progress: 0,
+  },
 };
 
 export const todoReducer = (
@@ -39,7 +60,7 @@ export const todoReducer = (
     case TodoActionType.GET_TODO_ACTION:
       return {
         ...state,
-        ...action.todos,
+        todos: [...action.todos],
       };
     default:
       return state;
