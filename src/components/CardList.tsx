@@ -9,6 +9,9 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
+import { useDispatch } from "react-redux";
+import { selectTodo } from "../store";
+
 import CustomText from "./CustomText";
 
 interface CardListProps {
@@ -31,6 +34,9 @@ const CardList: React.FC<CardListProps> = (props) => {
 
   const [pressProgress, setPressProgress] = useState<Animated.Value[]>([]);
   const DURATION_TIME = 56;
+
+  /** Global State */
+  const dispath = useDispatch();
 
   const pressInHandler = (index: number) => {
     Animated.timing(pressProgress[index], {
@@ -66,54 +72,70 @@ const CardList: React.FC<CardListProps> = (props) => {
             marginBottom: props.isSwipeUp ? 72 + 32.5 : 264 + 32.5,
           }}
         >
-          {props.items.map((item, index) => (
-            <TouchableHighlight
-              onLongPress={() =>
-                !props.items[index].today && !props.items[index].doneTime
-                  ? pressInHandler(index)
-                  : undefined
+          {props.items.map((item, index) => {
+            const keyName = {
+              remaining: item.today,
+              done: item.doneTime,
+              progress: !item.today && !item.doneTime,
+            };
+
+            let selectKeyName = "";
+
+            Object.values(keyName).forEach((item, index) => {
+              if (item) {
+                selectKeyName = Object.keys(keyName)[index];
               }
-              onPressOut={() =>
-                !props.items[index].today && !props.items[index].doneTime
-                  ? pressOutHandler(index)
-                  : undefined
-              }
-              underlayColor="#fff"
-              key={index}
-              style={[
-                styles.listItem,
-                index === props.items.length - 1 && { marginBottom: 24 },
-              ]}
-            >
-              <React.Fragment>
-                <View style={styles.deadline}>
-                  <CustomText size={10} type="bold" color="#ccc">
-                    {item.today
-                      ? "今日まで"
-                      : item.doneTime
-                      ? `${item.doneTime}に完了`
-                      : `残り${item.deadline}日`}
-                  </CustomText>
-                </View>
-                <TouchableHighlight
-                  style={styles.button}
-                  underlayColor="transparent"
-                  onPress={props.openFn}
-                >
-                  <View style={styles.bullet}>
-                    <View style={styles.bulletItem} />
-                    <View style={styles.bulletItem} />
-                    <View style={styles.bulletItem} />
+            });
+
+            return (
+              <TouchableHighlight
+                onLongPress={() =>
+                  !props.items[index].today && !props.items[index].doneTime
+                    ? pressInHandler(index)
+                    : undefined
+                }
+                onPressOut={() =>
+                  !props.items[index].today && !props.items[index].doneTime
+                    ? pressOutHandler(index)
+                    : undefined
+                }
+                underlayColor="#fff"
+                key={index}
+                style={[
+                  styles.listItem,
+                  index === props.items.length - 1 && { marginBottom: 24 },
+                ]}
+              >
+                <React.Fragment>
+                  <View style={styles.deadline}>
+                    <CustomText size={10} type="bold" color="#ccc">
+                      {item.today
+                        ? "今日まで"
+                        : item.doneTime
+                        ? `${item.doneTime}に完了`
+                        : `残り${item.deadline}日`}
+                    </CustomText>
                   </View>
-                </TouchableHighlight>
-                <View>
-                  <CustomText numberOfLines={2} ellipsizeMode="tail">
-                    {item.description}
-                  </CustomText>
-                </View>
-                {pressProgress[index] &&
-                  !props.items[index].today &&
-                  !props.items[index].doneTime && (
+                  <TouchableHighlight
+                    style={styles.button}
+                    underlayColor="transparent"
+                    onPress={() => {
+                      props.openFn();
+                      dispath(selectTodo({ [selectKeyName]: index }));
+                    }}
+                  >
+                    <View style={styles.bullet}>
+                      <View style={styles.bulletItem} />
+                      <View style={styles.bulletItem} />
+                      <View style={styles.bulletItem} />
+                    </View>
+                  </TouchableHighlight>
+                  <View>
+                    <CustomText numberOfLines={2} ellipsizeMode="tail">
+                      {item.description}
+                    </CustomText>
+                  </View>
+                  {pressProgress[index] && !item.today && !item.doneTime && (
                     <View style={styles.progressWrapper}>
                       <Animated.View
                         style={[
@@ -128,9 +150,10 @@ const CardList: React.FC<CardListProps> = (props) => {
                       />
                     </View>
                   )}
-              </React.Fragment>
-            </TouchableHighlight>
-          ))}
+                </React.Fragment>
+              </TouchableHighlight>
+            );
+          })}
         </ScrollView>
       </View>
     </View>

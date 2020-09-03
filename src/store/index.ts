@@ -17,7 +17,7 @@ export interface TodoState {
     progress: number;
   }[];
   /** 選択されたTodoのID */
-  todoId: number;
+  todoId: { [key: string]: number };
   /** Todoが追加・削除等の動きがあった場合に変化 */
   todoFlag: boolean;
 }
@@ -48,7 +48,7 @@ export const selectTodo = (todoId: TodoState["todoId"]) => {
 
 const initialState: TodoState = {
   todos: [],
-  todoId: 0,
+  todoId: { "": 0 },
   todoFlag: false,
 };
 
@@ -68,7 +68,6 @@ export const todoReducer = (
         todoFlag: !action.todoFlag,
       };
     case TodoActionType.SELECT_TODO_ACTION:
-      console.log("hogehoge", action.todoId);
       return {
         ...state,
         todoId: action.todoId,
