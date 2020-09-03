@@ -6,6 +6,9 @@ import SubmitButton from "../components/SubmitButton";
 import CustomText from "../components/CustomText";
 import Title from "../components/Title";
 
+import { useDispatch } from "react-redux";
+import { addTodo } from "../store";
+
 import { NavigationProps } from "../types";
 
 interface AddTaskScreenProps extends NavigationProps {}
@@ -14,6 +17,8 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
   const [deadline, setDeadline] = useState(0);
   const [description, setDescription] = useState("");
 
+  const dispatch = useDispatch();
+
   const navigationHandler = (to: string) => {
     props.navigation.navigate(to);
   };
@@ -21,6 +26,10 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
   const db = SQLite.openDatabase("db.db");
 
   const insertHandler = () => {
+    if (!deadline && !description) {
+      return;
+    }
+
     db.transaction(
       (tx) => {
         tx.executeSql(
@@ -36,6 +45,8 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
         props.navigation.goBack();
       }
     );
+
+    dispatch(addTodo());
   };
 
   return (

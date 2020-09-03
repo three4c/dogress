@@ -98,8 +98,6 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
               (1000 * 60 * 60 * 24)
           );
 
-          console.log(item.deadline, diffDay);
-
           return {
             id: item.id,
             deadline: item.deadline - diffDay,
@@ -112,7 +110,7 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
         dispath(getTodo(convertResults));
       }
     );
-  }, []);
+  }, [store.todoFlag]);
 
   return (
     <View style={styles.container}>
