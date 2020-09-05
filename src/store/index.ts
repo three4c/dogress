@@ -7,26 +7,36 @@ export enum TodoActionType {
 }
 
 export interface TodoState {
+  id: number;
+  deadline: number;
+  description: string;
+  today: boolean;
+  doneTime: string;
+  progress: number;
+}
+
+export interface GlobalState {
   /** Todoのデータ構造 */
-  todos: {
-    id: number;
-    deadline: number;
-    description: string;
-    today: boolean;
-    doneTime: string;
-    progress: number;
-  }[];
+  todos: TodoState[];
+  /** 残り */
+  remaining: TodoState[];
+  /** 完了 */
+  done: TodoState[];
+  /** 進行中 */
+  progress: TodoState[];
+  /** 選択されたTodoのKey */
+  todoKey: { [key: string]: number };
   /** 選択されたTodoのID */
-  todoId: { [key: string]: number };
+  todoId: number;
   /** Todoが追加・削除等の動きがあった場合に変化 */
   todoFlag: boolean;
 }
 
-export interface TodoAction extends TodoState {
+export interface TodoAction extends GlobalState {
   type: TodoActionType;
 }
 
-export const getTodo = (todos: TodoState["todos"]) => {
+export const getTodo = (todos: GlobalState["todos"]) => {
   return {
     type: TodoActionType.GET_TODO_ACTION,
     todos,
@@ -39,28 +49,36 @@ export const addTodo = () => {
   };
 };
 
-export const selectTodo = (todoId: TodoState["todoId"]) => {
+export const selectTodo = (todoId: GlobalState["todoKey"]) => {
   return {
     type: TodoActionType.SELECT_TODO_ACTION,
     todoId,
   };
 };
 
-const initialState: TodoState = {
+const initialState: GlobalState = {
   todos: [],
-  todoId: { "": 0 },
+  remaining: [],
+  done: [],
+  progress: [],
+  todoKey: { "": 0 },
+  todoId: 0,
   todoFlag: false,
 };
 
 export const todoReducer = (
   state = initialState,
   action: TodoAction
-): TodoState => {
+): GlobalState => {
   switch (action.type) {
     case TodoActionType.GET_TODO_ACTION:
       return {
         ...state,
-        todos: [...action.todos],
+        remaining: [...action.todos.filter((item) => item.today)],
+        done: [...action.todos.filter((item) => item.doneTime)],
+        progress: [
+          ...action.todos.filter((item) => !item.today && !item.doneTime),
+        ],
       };
     case TodoActionType.ADD_TODO_ACTION:
       return {
@@ -70,7 +88,10 @@ export const todoReducer = (
     case TodoActionType.SELECT_TODO_ACTION:
       return {
         ...state,
-        todoId: action.todoId,
+        todoId:
+          state[
+            Object.keys(action.todoId)[0] as "remaining" | "done" | "progress"
+          ][Object.values(action.todoId)[0]].id,
       };
     default:
       return state;

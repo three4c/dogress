@@ -11,7 +11,7 @@ import CircleButton from "../components/CircleButton";
 import Title from "../components/Title";
 
 import { useDispatch, useSelector } from "react-redux";
-import { TodoState, getTodo } from "../store";
+import { GlobalState, getTodo, addTodo } from "../store";
 
 import { NavigationProps } from "../types";
 
@@ -31,12 +31,8 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
   const [isShow, setShow] = useState(false);
 
   /** Global State */
-  const store = useSelector<TodoState, TodoState>((state) => state);
+  const store = useSelector<GlobalState, GlobalState>((state) => state);
   const dispath = useDispatch();
-
-  const remaining = store.todos.filter((item) => item.today);
-  const done = store.todos.filter((item) => item.doneTime);
-  const progress = store.todos.filter((item) => !item.today && !item.doneTime);
 
   const navigationHandler = (to: string) => {
     props.navigation.navigate(to);
@@ -122,28 +118,28 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
         </Title>
       </View>
       <CountBoard
-        remaining={remaining.length}
-        done={done.length}
-        progress={progress.length}
+        remaining={store.remaining.length}
+        done={store.done.length}
+        progress={store.progress.length}
       />
       <BottomSheetSwiper swipeUpFn={setSwipeUp}>
         <CardList
           title="残り"
           isSwipeUp={isSwipeUp}
           openFn={() => setShow(true)}
-          items={remaining}
+          items={store.remaining}
         />
         <CardList
           title="完了"
           isSwipeUp={isSwipeUp}
           openFn={() => setShow(true)}
-          items={done}
+          items={store.done}
         />
         <CardList
           title="進行中"
           isSwipeUp={isSwipeUp}
           openFn={() => setShow(true)}
-          items={progress}
+          items={store.progress}
         />
       </BottomSheetSwiper>
       <CircleButton openFn={() => navigationHandler("AddTask")} />
@@ -151,7 +147,7 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
         <TouchableHighlight
           style={styles.menu}
           underlayColor="transparent"
-          onPress={() => deleteHandler(4)}
+          onPress={() => deleteHandler(store.todoId)}
         >
           <CustomText type="bold" color="#e0245e">
             削除
