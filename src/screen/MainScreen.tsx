@@ -11,7 +11,7 @@ import CircleButton from "../components/CircleButton";
 import Title from "../components/Title";
 
 import { useDispatch, useSelector } from "react-redux";
-import { GlobalState, getTodo, addTodo } from "../store";
+import { GlobalState, setTodo, getTodo, deleteTodo } from "../store";
 
 import { NavigationProps } from "../types";
 
@@ -54,6 +54,8 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
         setShow(false);
       }
     );
+
+    dispath(deleteTodo());
   };
 
   useEffect(() => {
@@ -71,10 +73,9 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
         console.log("success_create");
       }
     );
-  }, []);
 
-  useEffect(() => {
     const results: InsertDatabaseType[] = [];
+
     db.transaction(
       (tx) => {
         tx.executeSql("select * from items", [], (_, items) => {
@@ -103,10 +104,15 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
             progress: item.progress,
           };
         });
-        dispath(getTodo(convertResults));
+        dispath(setTodo(convertResults));
       }
     );
-  }, [store.todoFlag]);
+  }, []);
+
+  useEffect(() => {
+    dispath(getTodo());
+    console.log("Geto Todos", store.todos);
+  }, [store.todos]);
 
   return (
     <View style={styles.container}>

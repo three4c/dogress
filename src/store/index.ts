@@ -1,9 +1,11 @@
 import { createStore } from "redux";
 
 export enum TodoActionType {
+  SET_TODO_ACTION = "SET_TODO_ACTION",
   GET_TODO_ACTION = "GET_TODO_ACTION",
   ADD_TODO_ACTION = "ADD_TODO_ACTION",
   SELECT_TODO_ACTION = "SELECT_TODO_ACTION",
+  DELETE_TODO_ACITON = "DELETE_ACTION_TODO",
 }
 
 export interface TodoState {
@@ -16,6 +18,8 @@ export interface TodoState {
 }
 
 export interface GlobalState {
+  /** Todoの単体データ構造 */
+  todo: TodoState;
   /** Todoのデータ構造 */
   todos: TodoState[];
   /** 残り */
@@ -28,24 +32,29 @@ export interface GlobalState {
   todoKey: { [key: string]: number };
   /** 選択されたTodoのID */
   todoId: number;
-  /** Todoが追加・削除等の動きがあった場合に変化 */
-  todoFlag: boolean;
 }
 
 export interface TodoAction extends GlobalState {
   type: TodoActionType;
 }
 
-export const getTodo = (todos: GlobalState["todos"]) => {
+export const setTodo = (todos: GlobalState["todos"]) => {
   return {
-    type: TodoActionType.GET_TODO_ACTION,
+    type: TodoActionType.SET_TODO_ACTION,
     todos,
   };
 };
 
-export const addTodo = () => {
+export const getTodo = () => {
+  return {
+    type: TodoActionType.GET_TODO_ACTION,
+  };
+};
+
+export const addTodo = (todo: GlobalState["todo"]) => {
   return {
     type: TodoActionType.ADD_TODO_ACTION,
+    todo,
   };
 };
 
@@ -56,14 +65,20 @@ export const selectTodo = (todoId: GlobalState["todoKey"]) => {
   };
 };
 
+export const deleteTodo = () => {
+  return {
+    type: TodoActionType.DELETE_TODO_ACITON,
+  };
+};
+
 const initialState: GlobalState = {
+  todo: {} as TodoState,
   todos: [],
   remaining: [],
   done: [],
   progress: [],
   todoKey: { "": 0 },
   todoId: 0,
-  todoFlag: false,
 };
 
 export const todoReducer = (
@@ -71,19 +86,24 @@ export const todoReducer = (
   action: TodoAction
 ): GlobalState => {
   switch (action.type) {
+    case TodoActionType.SET_TODO_ACTION:
+      return {
+        ...state,
+        todos: [...action.todos],
+      };
     case TodoActionType.GET_TODO_ACTION:
       return {
         ...state,
-        remaining: [...action.todos.filter((item) => item.today)],
-        done: [...action.todos.filter((item) => item.doneTime)],
+        remaining: [...state.todos.filter((item) => item.today)],
+        done: [...state.todos.filter((item) => item.doneTime)],
         progress: [
-          ...action.todos.filter((item) => !item.today && !item.doneTime),
+          ...state.todos.filter((item) => !item.today && !item.doneTime),
         ],
       };
     case TodoActionType.ADD_TODO_ACTION:
       return {
         ...state,
-        todoFlag: !action.todoFlag,
+        todos: [...state.todos, action.todo],
       };
     case TodoActionType.SELECT_TODO_ACTION:
       return {
@@ -92,6 +112,11 @@ export const todoReducer = (
           state[
             Object.keys(action.todoId)[0] as "remaining" | "done" | "progress"
           ][Object.values(action.todoId)[0]].id,
+      };
+    case TodoActionType.DELETE_TODO_ACITON:
+      return {
+        ...state,
+        todos: [...state.todos.filter((item) => item.id !== state.todoId)],
       };
     default:
       return state;

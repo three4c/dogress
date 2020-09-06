@@ -6,8 +6,8 @@ import SubmitButton from "../components/SubmitButton";
 import CustomText from "../components/CustomText";
 import Title from "../components/Title";
 
-import { useDispatch } from "react-redux";
-import { addTodo } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { GlobalState, addTodo } from "../store";
 
 import { NavigationProps } from "../types";
 
@@ -17,6 +17,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
   const [deadline, setDeadline] = useState(0);
   const [description, setDescription] = useState("");
 
+  const store = useSelector<GlobalState, GlobalState>((state) => state);
   const dispatch = useDispatch();
 
   const navigationHandler = (to: string) => {
@@ -46,7 +47,16 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
       }
     );
 
-    dispatch(addTodo());
+    const todo = {
+      id: store.todos[store.todos.length - 1].id + 1,
+      deadline: deadline,
+      description: description,
+      today: deadline === 0,
+      doneTime: "",
+      progress: 0,
+    };
+
+    dispatch(addTodo(todo));
   };
 
   return (
