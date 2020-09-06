@@ -48,7 +48,10 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
     );
 
     const todo = {
-      id: store.todos[store.todos.length - 1].id + 1,
+      id:
+        store.todos.length === 0
+          ? 0
+          : store.todos[store.todos.length - 1].id + 1,
       deadline: deadline,
       description: description,
       today: deadline === 0,

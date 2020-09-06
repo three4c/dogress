@@ -8,8 +8,11 @@ import {
   Easing,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import * as SQLite from "expo-sqlite";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { GlobalState } from "../store";
+
 import { selectTodo } from "../store";
 
 import CustomText from "./CustomText";
@@ -18,13 +21,7 @@ interface CardListProps {
   title: string;
   isSwipeUp: boolean;
   openFn: () => void;
-  items: {
-    deadline: number;
-    description: string;
-    today: boolean;
-    doneTime: string;
-    progress: number;
-  }[];
+  items: GlobalState["todos"];
 }
 
 const CardList: React.FC<CardListProps> = (props) => {
@@ -36,6 +33,7 @@ const CardList: React.FC<CardListProps> = (props) => {
   const DURATION_TIME = 56;
 
   /** Global State */
+  const store = useSelector<GlobalState, GlobalState>((state) => state);
   const dispath = useDispatch();
 
   const pressInHandler = (index: number) => {
@@ -49,6 +47,25 @@ const CardList: React.FC<CardListProps> = (props) => {
   const pressOutHandler = (index: number) => {
     const value = (pressProgress[index] as any)._value;
     pressProgress[index].setValue(value);
+
+    const db = SQLite.openDatabase("db.db");
+
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          `update items set progress=${
+            (pressProgress[index] as any)._value
+          } where id = ?;`,
+          [store.todoId]
+        );
+      },
+      (error) => {
+        console.log("fail_update", error);
+      },
+      () => {
+        console.log("success_update");
+      }
+    );
   };
 
   useEffect(() => {
@@ -89,11 +106,12 @@ const CardList: React.FC<CardListProps> = (props) => {
 
             return (
               <TouchableHighlight
-                onLongPress={() =>
+                onLongPress={() => {
                   !props.items[index].today && !props.items[index].doneTime
                     ? pressInHandler(index)
-                    : undefined
-                }
+                    : undefined;
+                  dispath(selectTodo({ [selectKeyName]: index }));
+                }}
                 onPressOut={() =>
                   !props.items[index].today && !props.items[index].doneTime
                     ? pressOutHandler(index)

@@ -15,15 +15,6 @@ import { GlobalState, setTodo, getTodo, deleteTodo } from "../store";
 
 import { NavigationProps } from "../types";
 
-interface InsertDatabaseType {
-  id: number;
-  deadline: number;
-  description: string;
-  createdOn: string;
-  doneTime: string;
-  progress: number;
-}
-
 interface MainScreenProps extends NavigationProps {}
 
 const MainScreen: React.FC<MainScreenProps> = (props) => {
@@ -41,10 +32,10 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
 
   const db = SQLite.openDatabase("db.db");
 
-  const deleteHandler = (id: number) => {
+  const deleteHandler = () => {
     db.transaction(
       (tx) => {
-        tx.executeSql("delete from items where id = ?;", [id]);
+        tx.executeSql("delete from items where id = ?;", [store.todoId]);
       },
       (error) => {
         console.log("fail_delete", error);
@@ -74,7 +65,14 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
       }
     );
 
-    const results: InsertDatabaseType[] = [];
+    const results: {
+      id: number;
+      deadline: number;
+      description: string;
+      createdOn: string;
+      doneTime: string;
+      progress: number;
+    }[] = [];
 
     db.transaction(
       (tx) => {
@@ -153,7 +151,7 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
         <TouchableHighlight
           style={styles.menu}
           underlayColor="transparent"
-          onPress={() => deleteHandler(store.todoId)}
+          onPress={deleteHandler}
         >
           <CustomText type="bold" color="#e0245e">
             削除
