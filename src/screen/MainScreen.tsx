@@ -109,7 +109,7 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
 
   useEffect(() => {
     dispath(getTodo());
-    console.log("Geto Todos", store.todos);
+    console.log("Get Todos", store.todos);
   }, [store.todos]);
 
   return (

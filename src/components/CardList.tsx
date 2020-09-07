@@ -11,7 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as SQLite from "expo-sqlite";
 
 import { useDispatch, useSelector } from "react-redux";
-import { GlobalState } from "../store";
+import { GlobalState, setTodo } from "../store";
 
 import { selectTodo } from "../store";
 
@@ -48,16 +48,23 @@ const CardList: React.FC<CardListProps> = (props) => {
     const value = (pressProgress[index] as any)._value;
     pressProgress[index].setValue(value);
 
+    if (value === 100) {
+      const today = new Date();
+      const newArray = [...store.todos];
+      newArray[index].doneTime = `${
+        today.getMonth() + 1
+      }/${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
+      setTodo(newArray);
+      console.log("update progress", store.todos);
+    }
+
     const db = SQLite.openDatabase("db.db");
 
     db.transaction(
       (tx) => {
-        tx.executeSql(
-          `update items set progress=${
-            (pressProgress[index] as any)._value
-          } where id = ?;`,
-          [store.todoId]
-        );
+        tx.executeSql(`update items set progress=${value} where id = ?;`, [
+          store.todoId,
+        ]);
       },
       (error) => {
         console.log("fail_update", error);
