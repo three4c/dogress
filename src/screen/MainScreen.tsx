@@ -49,6 +49,10 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
     dispath(deleteTodo());
   };
 
+  const editHandler = () => {
+    navigationHandler("EditTask");
+  };
+
   useEffect(() => {
     db.transaction(
       (tx) => {
@@ -160,7 +164,7 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
         <TouchableHighlight
           style={styles.menu}
           underlayColor="transparent"
-          onPress={() => navigationHandler("EditTask")}
+          onPress={editHandler}
         >
           <CustomText type="bold">タスクを編集する</CustomText>
         </TouchableHighlight>

@@ -51,7 +51,7 @@ const CardList: React.FC<CardListProps> = (props) => {
     const today = new Date();
     const doneTime = `${
       today.getMonth() + 1
-    }/${today.getDate()} ${today.getHours()}:${today.getMinutes()}`;
+    }月${today.getDate()}日 ${today.getHours()}時${today.getMinutes()}分`;
 
     if (value === 100) {
       const newArray = [...store.progress];
@@ -66,7 +66,7 @@ const CardList: React.FC<CardListProps> = (props) => {
       (tx) => {
         tx.executeSql(
           `update items set progress=${value}${
-            value === 100 ? `, doneTime=${doneTime}` : `, doneTime=""`
+            value === 100 ? `, doneTime="${doneTime}"` : `, doneTime=""`
           } where id = ?;`,
           [store.todoId]
         );

@@ -88,6 +88,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
           placeholderTextColor="#6b84ff"
           onChangeText={(text) => setDeadline(Number(text))}
           selectionColor="#fff"
+          keyboardType="numeric"
           style={styles.textInput}
         />
       </View>

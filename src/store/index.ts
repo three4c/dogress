@@ -58,10 +58,10 @@ export const addTodo = (todo: GlobalState["todo"]) => {
   };
 };
 
-export const selectTodo = (todoId: GlobalState["todoKey"]) => {
+export const selectTodo = (todoKey: GlobalState["todoKey"]) => {
   return {
     type: TodoActionType.SELECT_TODO_ACTION,
-    todoId,
+    todoKey,
   };
 };
 
@@ -110,8 +110,8 @@ export const todoReducer = (
         ...state,
         todoId:
           state[
-            Object.keys(action.todoId)[0] as "remaining" | "done" | "progress"
-          ][Object.values(action.todoId)[0]].id,
+            Object.keys(action.todoKey)[0] as "remaining" | "done" | "progress"
+          ][Object.values(action.todoKey)[0]].id,
       };
     case TodoActionType.DELETE_TODO_ACITON:
       return {
