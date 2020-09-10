@@ -24,12 +24,12 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
     props.navigation.navigate(to);
   };
 
-  const db = SQLite.openDatabase("db.db");
-
   const insertHandler = () => {
     if (!deadline && !description) {
       return;
     }
+
+    const db = SQLite.openDatabase("db.db");
 
     db.transaction(
       (tx) => {

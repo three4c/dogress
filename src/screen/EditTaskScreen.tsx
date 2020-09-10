@@ -1,24 +1,29 @@
 import React, { useState } from "react";
 import { StyleSheet, View, TouchableHighlight, TextInput } from "react-native";
+import * as SQLite from "expo-sqlite";
 
 import SubmitButton from "../components/SubmitButton";
 import CustomText from "../components/CustomText";
 import Title from "../components/Title";
 
 import { useDispatch, useSelector } from "react-redux";
-import { GlobalState, getTodo } from "../store";
+import { GlobalState, getTodo, setTodo } from "../store";
 
 import { NavigationProps } from "../types";
 
 interface EditTaskScreenProps extends NavigationProps {}
 
 const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
-  const [deadline, setDeadline] = useState(0);
-  const [description, setDescription] = useState("");
-
   /** Global State */
   const store = useSelector<GlobalState, GlobalState>((state) => state);
   const dispath = useDispatch();
+  const storeTask =
+    store[Object.keys(store.todoKey)[0] as "remaining" | "done" | "progress"][
+      Object.values(store.todoKey)[0]
+    ];
+
+  const [deadline, setDeadline] = useState(storeTask.deadline);
+  const [description, setDescription] = useState(storeTask.description);
 
   const navigationHandler = (to: string) => {
     props.navigation.navigate(to);
@@ -32,8 +37,26 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
     ];
     newArray[Object.values(store.todoKey)[0]].deadline = deadline;
     newArray[Object.values(store.todoKey)[0]].description = description;
-    console.log("aaaaaaaaaa", newArray);
+    setTodo(newArray);
     dispath(getTodo());
+
+    const db = SQLite.openDatabase("db.db");
+
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          `update items set deadline=${deadline}, description="${description}" where id = ?;`,
+          [store.todoId]
+        );
+      },
+      () => {
+        console.log("fail_update");
+      },
+      () => {
+        console.log("success_update");
+        props.navigation.goBack();
+      }
+    );
   };
 
   return (
@@ -42,7 +65,10 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
         <CustomText color="#fff" size={24}>
           タスクを編集
         </CustomText>
-        <TouchableHighlight onPress={() => navigationHandler("Main")}>
+        <TouchableHighlight
+          underlayColor="transparent"
+          onPress={() => navigationHandler("Main")}
+        >
           <CustomText color="#fff" size={14}>
             キャンセル
           </CustomText>
@@ -55,7 +81,7 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
         <TextInput
           autoCapitalize="none"
           autoCorrect
-          value="hogehoge"
+          value={String(deadline)}
           onChangeText={(text) => setDeadline(Number(text))}
           selectionColor="#fff"
           keyboardType="numeric"
@@ -69,7 +95,7 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
         <TextInput
           autoCapitalize="none"
           autoCorrect
-          value="hogehoge"
+          value={description}
           onChangeText={(text) => setDescription(text)}
           selectionColor="#fff"
           style={styles.textInput}
