@@ -108,6 +108,7 @@ export const todoReducer = (
     case TodoActionType.SELECT_TODO_ACTION:
       return {
         ...state,
+        todoKey: action.todoKey,
         todoId:
           state[
             Object.keys(action.todoKey)[0] as "remaining" | "done" | "progress"
