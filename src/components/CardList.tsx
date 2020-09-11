@@ -54,10 +54,17 @@ const CardList: React.FC<CardListProps> = (props) => {
     }月${today.getDate()}日 ${today.getHours()}時${today.getMinutes()}分`;
 
     if (value === 100) {
-      const newArray = [...store.progress];
-      newArray[index].doneTime = doneTime;
-      setTodo(newArray);
-      dispath(getTodo());
+      const newTodosArray = [...store.todos];
+      const newProgressArray = [...store.progress];
+
+      newTodosArray.forEach((todosItem, todosIndex) => {
+        if (todosItem.id === newProgressArray[index].id) {
+          console.log(todosItem.id, newProgressArray[index].id);
+          newTodosArray[todosIndex].doneTime = doneTime;
+        }
+      });
+      console.log("newArray", newTodosArray);
+      dispath(setTodo(newTodosArray));
     }
 
     const db = SQLite.openDatabase("db.db");

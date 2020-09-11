@@ -30,15 +30,20 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
   };
 
   const editHandler = () => {
-    const newArray = [
+    const newTodosArray = [...store.todos];
+    const newFilterArray = [
       ...store[
         Object.keys(store.todoKey)[0] as "remaining" | "done" | "progress"
       ],
     ];
-    newArray[Object.values(store.todoKey)[0]].deadline = deadline;
-    newArray[Object.values(store.todoKey)[0]].description = description;
-    setTodo(newArray);
-    dispath(getTodo());
+
+    newTodosArray.forEach((todosItem, todosIndex) => {
+      if (todosItem.id === newFilterArray[Object.values(store.todoKey)[0]].id) {
+        newTodosArray[todosIndex].deadline = deadline;
+        newTodosArray[todosIndex].description = description;
+      }
+    });
+    dispath(setTodo(newTodosArray));
 
     const db = SQLite.openDatabase("db.db");
 
