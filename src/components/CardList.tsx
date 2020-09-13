@@ -30,7 +30,7 @@ const CardList: React.FC<CardListProps> = (props) => {
   );
 
   const [pressProgress, setPressProgress] = useState<Animated.Value[]>([]);
-  const DURATION_TIME = 56;
+  const DURATION_TIME = 40;
 
   /** Global State */
   const store = useSelector<GlobalState, GlobalState>((state) => state);
