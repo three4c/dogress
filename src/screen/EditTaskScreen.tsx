@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, View, TouchableHighlight, TextInput } from "react-native";
 import * as SQLite from "expo-sqlite";
 
@@ -7,7 +7,7 @@ import CustomText from "../components/CustomText";
 import Title from "../components/Title";
 
 import { useDispatch, useSelector } from "react-redux";
-import { GlobalState, getTodo, setTodo } from "../store";
+import { GlobalState, setTodo } from "../store";
 
 import { NavigationProps } from "../types";
 
@@ -22,8 +22,15 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
       Object.values(store.todoKey)[0]
     ];
 
-  const [deadline, setDeadline] = useState(storeTask.deadline);
-  const [description, setDescription] = useState(storeTask.description);
+  const [deadline, setDeadline] = useState(0);
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (storeTask) {
+      setDeadline(storeTask.deadline);
+      setDescription(storeTask.description);
+    }
+  }, [storeTask]);
 
   const navigationHandler = (to: string) => {
     props.navigation.navigate(to);
@@ -41,8 +48,10 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
       if (todosItem.id === newFilterArray[Object.values(store.todoKey)[0]].id) {
         newTodosArray[todosIndex].deadline = deadline;
         newTodosArray[todosIndex].description = description;
+        newTodosArray[todosIndex].today = deadline <= 0;
       }
     });
+
     dispath(setTodo(newTodosArray));
 
     const db = SQLite.openDatabase("db.db");
