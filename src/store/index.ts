@@ -94,7 +94,9 @@ export const todoReducer = (
     case TodoActionType.GET_TODO_ACTION:
       return {
         ...state,
-        remaining: [...state.todos.filter((item) => item.today)],
+        remaining: [
+          ...state.todos.filter((item) => item.today && !item.doneTime),
+        ],
         done: [...state.todos.filter((item) => item.doneTime)],
         progress: [
           ...state.todos.filter((item) => !item.today && !item.doneTime),

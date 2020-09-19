@@ -49,8 +49,13 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
         newTodosArray[todosIndex].deadline = deadline;
         newTodosArray[todosIndex].description = description;
         newTodosArray[todosIndex].today = deadline <= 0;
+        if (deadline >= 0) {
+          newTodosArray[todosIndex].doneTime = "";
+        }
       }
     });
+
+    console.log("unnko", store.todoId);
 
     dispath(setTodo(newTodosArray));
 
@@ -59,7 +64,9 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          `update items set deadline=${deadline}, description="${description}" where id = ?;`,
+          `update items set deadline=${deadline}, description="${description}"${
+            deadline >= 0 ? ', doneTime=""' : ""
+          } where id = ?;`,
           [store.todoId]
         );
       },

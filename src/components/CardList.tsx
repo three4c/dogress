@@ -11,7 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as SQLite from "expo-sqlite";
 
 import { useDispatch, useSelector } from "react-redux";
-import { GlobalState, setTodo, getTodo } from "../store";
+import { GlobalState, setTodo } from "../store";
 
 import { selectTodo } from "../store";
 
@@ -59,11 +59,9 @@ const CardList: React.FC<CardListProps> = (props) => {
 
       newTodosArray.forEach((todosItem, todosIndex) => {
         if (todosItem.id === newProgressArray[index].id) {
-          console.log(todosItem.id, newProgressArray[index].id);
           newTodosArray[todosIndex].doneTime = doneTime;
         }
       });
-      console.log("newArray", newTodosArray);
       dispath(setTodo(newTodosArray));
     }
 
@@ -87,6 +85,43 @@ const CardList: React.FC<CardListProps> = (props) => {
     );
   };
 
+  const pressLongHandler = (index: number) => {
+    const today = new Date();
+    const doneTime = `${
+      today.getMonth() + 1
+    }月${today.getDate()}日 ${today.getHours()}時${today.getMinutes()}分`;
+
+    const newTodosArray = [...store.todos];
+    const newProgressArray = [...store.remaining];
+    let id = 0;
+
+    newTodosArray.forEach((todosItem, todosIndex) => {
+      if (todosItem.id === newProgressArray[index].id) {
+        newTodosArray[todosIndex].doneTime = doneTime;
+        id = newTodosArray[todosIndex].id;
+      }
+    });
+
+    dispath(setTodo(newTodosArray));
+
+    const db = SQLite.openDatabase("db.db");
+
+    db.transaction(
+      (tx) => {
+        tx.executeSql(`update items set doneTime="${doneTime}" where id = ?;`, [
+          id,
+        ]);
+      },
+      (error) => {
+        console.log("fail_update", error);
+      },
+      () => {
+        console.log("success_update");
+      }
+    );
+  };
+
+  /** タスクが完了になるタイミング */
   useEffect(() => {
     setPressProgress(progressArray);
   }, [props.items]);
@@ -126,10 +161,12 @@ const CardList: React.FC<CardListProps> = (props) => {
             return (
               <TouchableHighlight
                 onLongPress={() => {
+                  dispath(selectTodo({ [selectKeyName]: index }));
                   !props.items[index].today && !props.items[index].doneTime
                     ? pressInHandler(index)
+                    : !props.items[index].doneTime
+                    ? pressLongHandler(index)
                     : undefined;
-                  dispath(selectTodo({ [selectKeyName]: index }));
                 }}
                 onPressOut={() =>
                   !props.items[index].today && !props.items[index].doneTime
@@ -146,7 +183,7 @@ const CardList: React.FC<CardListProps> = (props) => {
                 <React.Fragment>
                   <View style={styles.deadline}>
                     <CustomText size={10} type="bold" color="#ccc">
-                      {item.today
+                      {item.today && !item.doneTime
                         ? "今日まで"
                         : item.doneTime
                         ? `${item.doneTime}に完了`
