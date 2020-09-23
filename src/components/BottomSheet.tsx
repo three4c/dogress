@@ -5,6 +5,7 @@ import {
   PanGestureHandlerGestureEvent,
   PanGestureHandlerStateChangeEvent,
   State,
+  TouchableHighlight,
 } from "react-native-gesture-handler";
 
 interface BottomSheetProps {
@@ -114,6 +115,11 @@ const BottomSheet: React.FC<BottomSheetProps> = (props) => {
           { opacity: backgroundOpacity, display: isShow ? "" : "none" },
         ]}
       >
+        <TouchableHighlight
+          onPress={props.closeFn}
+          underlayColor="transparent"
+          style={styles.cover}
+        />
         <Animated.View style={{ transform: [{ translateY: panPositionY }] }}>
           <View
             style={styles.bottomSheet}
@@ -134,6 +140,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "rgba(0, 0, 0, 0.24)",
     justifyContent: "flex-end",
+  },
+  cover: {
+    height: "100%",
   },
   chip: {
     backgroundColor: "#ccc",
