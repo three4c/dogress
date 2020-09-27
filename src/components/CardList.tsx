@@ -29,14 +29,24 @@ const CardList: React.FC<CardListProps> = (props) => {
     (item) => new Animated.Value(item.progress)
   );
 
+  const remainingArray: Animated.Value[] = [];
+
+  /** map, filterよりはforEachでundefinedを入れない */
+  props.items.forEach((item) => {
+    if (item.today && !item.doneTime) {
+      remainingArray.push(new Animated.Value(0));
+    }
+  });
+
   const [pressProgress, setPressProgress] = useState<Animated.Value[]>([]);
+  const [pressRemaining, setPressRemaining] = useState<Animated.Value[]>([]);
   const DURATION_TIME = 40;
 
   /** Global State */
   const store = useSelector<GlobalState, GlobalState>((state) => state);
   const dispath = useDispatch();
 
-  const pressInHandler = (index: number) => {
+  const longPressProgressHandler = (index: number) => {
     Animated.timing(pressProgress[index], {
       toValue: 100,
       duration: DURATION_TIME * (100 - (pressProgress[index] as any)._value),
@@ -44,7 +54,7 @@ const CardList: React.FC<CardListProps> = (props) => {
     }).start();
   };
 
-  const pressOutHandler = (index: number) => {
+  const pressOutProgressHandler = (index: number) => {
     const value = (pressProgress[index] as any)._value;
     pressProgress[index].setValue(value);
 
@@ -85,12 +95,22 @@ const CardList: React.FC<CardListProps> = (props) => {
     );
   };
 
-  const pressLongHandler = (index: number) => {
+  const longPressRemainingHandler = (index: number) => {
+    Animated.timing(pressRemaining[index], {
+      toValue: 100,
+      duration: 400,
+      easing: Easing.in(Easing.out(Easing.ease)),
+    }).start();
+  };
+
+  const pressOutRemainingHandler = (index: number) => {
+    const value = (pressRemaining[index] as any)._value;
+    pressRemaining[index].setValue(value);
+
     const today = new Date();
     const doneTime = `${
       today.getMonth() + 1
     }月${today.getDate()}日 ${today.getHours()}時${today.getMinutes()}分`;
-
     const newTodosArray = [...store.todos];
     const newProgressArray = [...store.remaining];
     let id = 0;
@@ -105,7 +125,6 @@ const CardList: React.FC<CardListProps> = (props) => {
     dispath(setTodo(newTodosArray));
 
     const db = SQLite.openDatabase("db.db");
-
     db.transaction(
       (tx) => {
         tx.executeSql(`update items set doneTime="${doneTime}" where id = ?;`, [
@@ -124,6 +143,7 @@ const CardList: React.FC<CardListProps> = (props) => {
   /** タスクが完了になるタイミング */
   useEffect(() => {
     setPressProgress(progressArray);
+    setPressRemaining(remainingArray);
   }, [props.items]);
 
   return (
@@ -163,24 +183,41 @@ const CardList: React.FC<CardListProps> = (props) => {
                 onLongPress={() => {
                   dispath(selectTodo({ [selectKeyName]: index }));
                   !props.items[index].today && !props.items[index].doneTime
-                    ? pressInHandler(index)
+                    ? longPressProgressHandler(index)
                     : !props.items[index].doneTime
-                    ? pressLongHandler(index)
+                    ? longPressRemainingHandler(index)
                     : undefined;
                 }}
                 onPressOut={() =>
                   !props.items[index].today && !props.items[index].doneTime
-                    ? pressOutHandler(index)
+                    ? pressOutProgressHandler(index)
+                    : !props.items[index].doneTime
+                    ? pressOutRemainingHandler(index)
                     : undefined
                 }
-                underlayColor="#fff"
+                underlayColor="transparent"
                 key={index}
-                style={[
-                  styles.listItem,
-                  index === props.items.length - 1 && { marginBottom: 24 },
-                ]}
               >
-                <React.Fragment>
+                <Animated.View
+                  style={[
+                    styles.listItem,
+                    index === props.items.length - 1 && {
+                      marginBottom: 24,
+                    },
+                    pressRemaining[index] &&
+                      props.items[index].today &&
+                      !props.items[index].doneTime && {
+                        transform: [
+                          {
+                            scale: pressRemaining[index].interpolate({
+                              inputRange: [0, 100],
+                              outputRange: [1, 0.96],
+                            }),
+                          },
+                        ],
+                      },
+                  ]}
+                >
                   <View style={styles.deadline}>
                     <CustomText size={10} type="bold" color="#ccc">
                       {item.today && !item.doneTime
@@ -224,7 +261,7 @@ const CardList: React.FC<CardListProps> = (props) => {
                       />
                     </View>
                   )}
-                </React.Fragment>
+                </Animated.View>
               </TouchableHighlight>
             );
           })}

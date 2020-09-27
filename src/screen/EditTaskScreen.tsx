@@ -55,8 +55,6 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
       }
     });
 
-    console.log("unnko", store.todoId);
-
     dispath(setTodo(newTodosArray));
 
     const db = SQLite.openDatabase("db.db");
