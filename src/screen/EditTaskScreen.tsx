@@ -32,7 +32,7 @@ const EditTaskScreen: React.FC<EditTaskScreenProps> = (props) => {
     }
   }, [storeTask]);
 
-  const navigationHandler = (to: string) => {
+  const navigationHandler = (to: "Main" | "AddTask" | "EditTask") => {
     props.navigation.navigate(to);
   };
 

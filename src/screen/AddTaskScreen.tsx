@@ -20,7 +20,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = (props) => {
   const store = useSelector<GlobalState, GlobalState>((state) => state);
   const dispatch = useDispatch();
 
-  const navigationHandler = (to: string) => {
+  const navigationHandler = (to: "Main" | "AddTask" | "EditTask") => {
     props.navigation.navigate(to);
   };
 

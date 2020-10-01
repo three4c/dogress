@@ -25,7 +25,7 @@ const MainScreen: React.FC<MainScreenProps> = (props) => {
   const store = useSelector<GlobalState, GlobalState>((state) => state);
   const dispath = useDispatch();
 
-  const navigationHandler = (to: string) => {
+  const navigationHandler = (to: "Main" | "AddTask" | "EditTask") => {
     props.navigation.navigate(to);
     setShow(false);
   };
